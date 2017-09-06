@@ -1,7 +1,7 @@
 import javax.swing.*;
 
 public class Uppgift1{
-    public static void main (String[] arg) {
+    public static void main (String[] args) {
         String indata = JOptionPane.showInputDialog("Ange din längd: ");
         int length = Integer.parseInt(indata);
         indata = JOptionPane.showInputDialog("Ange din vikt: ");

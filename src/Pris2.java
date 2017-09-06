@@ -4,7 +4,7 @@
 
 import javax.swing.*;
 
-public class Pris {
+public class Pris2 {
     public static void main(String[] args) {
         String indata = JOptionPane.showInputDialog("Ange varans pris i kronor: ");
         double perStyck = Double.parseDouble(indata);
@@ -15,14 +15,28 @@ public class Pris {
         double bruttoPris = antal * perStyck;
         double nettoPris;
         double rabatt;
+        double rabattFaktor;
 
-        if (bruttoPris > 1000)
-            rabatt = bruttoPris * 0.1;
+        if (bruttoPris > 750)
+            rabattFaktor = 0.05;
+        else if (bruttoPris > 1500)
+            rabattFaktor = 0.1;
+        else if (bruttoPris > 3000)
+            rabattFaktor = 0.15;
         else
-            rabatt = 0;
+            rabattFaktor = 0;
 
+        rabatt = bruttoPris * rabattFaktor;
         nettoPris = bruttoPris - rabatt;
 
-        JOptionPane.showMessageDialog(null, "Priset blir: " + nettoPris + " kronor.\n");
+        String bruttoMessage = "Bruttopris: " + bruttoPris;
+        String rabattMessage = "Rabatt: " + rabatt;
+        String nettoMessage = "Nettopris: " + nettoPris;
+
+        JOptionPane.showMessageDialog(null,
+                bruttoMessage + "\n" +
+                rabattMessage + "\n" +
+                nettoMessage + "\n"
+        );
     }
 }

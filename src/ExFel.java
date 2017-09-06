@@ -1,12 +1,14 @@
-//public class TExFel {
-//    public static void main(String[] arg) {
-//        int tal1, tal2;
-//        double tal3
-//        indata = JOptionPane.showInputDialog("Ange f�rsta talet");
-//        tal1 = parseInt(indata);
-//        indata = JOptionPane.showInputDialog("Ange andra talet);
-//        Tal2 = Integer.parseInt(indata);
-//        tal3 = tal1 / tal2;
-//        JOptionPane.showMessageDialog(null, "Resultatet blev" + tal3);
-//    }
-//}
+import javax.swing.*;
+
+public class ExFel {
+    public static void main(String[] arg) {
+        Float tal1, tal2;
+        double tal3;
+        String indata = JOptionPane.showInputDialog("Ange forsta talet");
+        tal1 = Float.parseFloat(indata);
+        indata = JOptionPane.showInputDialog("Ange andra talet");
+        tal2 = Float.parseFloat(indata);
+        tal3 = tal1 / tal2;
+        JOptionPane.showMessageDialog(null, "Resultatet blev " + tal3);
+    }
+}
