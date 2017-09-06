@@ -2,22 +2,22 @@ import javax.swing.*;
 
 public class Uppgift1{
     public static void main (String[] arg) {
-        String indata = JOptionPane.showInputDialog("Ange din längd: ");
+        String indata = JOptionPane.showInputDialog("Ange din lÃ¤ngd: ");
         int length = Integer.parseInt(indata);
         indata = JOptionPane.showInputDialog("Ange din vikt: ");
         int weight =  Integer.parseInt(indata);
-        indata = JOptionPane.showInputDialog("Ange din ålder: ");
+        indata = JOptionPane.showInputDialog("Ange din Ã¥lder: ");
         int age =  Integer.parseInt(indata);
-        int svar = JOptionPane.showConfirmDialog(null, "Är du kvinna?");
+        int svar = JOptionPane.showConfirmDialog(null, "Ã¤r du kvinna?");
         double calories;
         if (svar == 2)
-            JOptionPane.showMessageDialog(null, "Du avgav inget ärligt svar!");
+            JOptionPane.showMessageDialog(null, "Du avgav inget Ã¤rligt svar!");
         else {
             if (svar == 0)
                 calories = 447.7 + 3.1 * length + 9.3 * weight - 4.3 * age;
             else
                 calories = 88.4 + 4.8 * length + 13.4 * weight - 5.7 * age;
-            JOptionPane.showMessageDialog(null, "Din kaloriförbrukning i vila är "
+            JOptionPane.showMessageDialog(null, "Din kalorifÃ¶rbrukning i vila Ã¤r "
                     + (int) calories + " kilokalorier per dygn.");
         }
     }

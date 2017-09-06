@@ -1,5 +1,5 @@
-// Programmet beräknar hypotenusan av en rätvinklig triangel
-// vars båda katetrar är 3.0 respektive 4.0
+// Programmet berÃ¤knar hypotenusan av en rÃ¤tvinklig triangel
+// vars bÃ¥da katetrar Ã¤r 3.0 respektive 4.0
 
 public class Triangel {
     public static void main(String[] arg) {
@@ -7,7 +7,7 @@ public class Triangel {
         kateter1 = 3.0;
         kateter2 = 4.0;
         hypotenusa = Math.sqrt(Math.pow(kateter1, 2) + Math.pow(kateter2, 2));
-        System.out.println("En rätvinklig triangel med sidorna " + kateter1 + " och " + kateter2);
+        System.out.println("En rï¿½tvinklig triangel med sidorna " + kateter1 + " och " + kateter2);
         System.out.println("har hypotenusan " + hypotenusa);
     }
 }

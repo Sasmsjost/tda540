@@ -1,6 +1,6 @@
-// Programmet läser in hur mycket en vara kostar per styck, hur många enheter av varan
-// som köpts samt beräknar och skriver ut totala priset efter att 10 procents rabatt erhållits om
-// totalpriset överstiger 1000 kr.
+// Programmet lÃ¶ser in hur mycket en vara kostar per styck, hur mÃ¥nga enheter av varan
+// som kÃ¶pts samt berÃ¤knar och skriver ut totala priset efter att 10 procents rabatt erhÃ¥llits om
+// totalpriset Ã¶verstiger 1000 kr.
 
 import javax.swing.*;
 
