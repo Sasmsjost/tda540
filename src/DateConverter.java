@@ -8,12 +8,15 @@ public class DateConverter {
 
         int date = parser.nextInt();
 
+        // Can be seen as using the mask 110000
         int year = date / 10000;
         date = date % 10000;
 
+        // Can be seen as using the mask 1100
         int month = date / 100;
         date = date % 100;
 
+        // Can be seen as using the mask 11
         int day = date;
 
         String message = String.format("%02d/%02d/%02d", month, day, year);
