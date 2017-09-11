@@ -1,4 +1,4 @@
-//This program reads the radius of a circle and prints its are
+package uppgift6;//This program reads the radius of a circle and prints its are
 
 import javax.swing.*;
 

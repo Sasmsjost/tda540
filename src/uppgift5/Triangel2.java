@@ -1,5 +1,4 @@
-// Programmet beräknar hypotenusan av en rätvinklig triangel
-// vars båda katetrar är 3.0 respektive 4.0
+package uppgift5;
 
 import javax.swing.*;
 
@@ -14,6 +13,6 @@ public class Triangel2 {
         kateter2 = Double.parseDouble(katet2In);
 
         hypotenusa = Math.sqrt(Math.pow(kateter1, 2) + Math.pow(kateter2, 2));
-        JOptionPane.showMessageDialog(null, "Hypotenusan �r " + hypotenusa + " l�ng");
+        JOptionPane.showMessageDialog(null, "Hypotenusan är " + hypotenusa + " lång");
     }
 }

@@ -1,3 +1,5 @@
+package uppgift8;
+
 import javax.swing.*;
 
 public class ExchangeRate {

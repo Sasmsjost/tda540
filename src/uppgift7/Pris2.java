@@ -1,4 +1,4 @@
-// Programmet löser in hur mycket en vara kostar per styck, hur många enheter av varan
+package uppgift7;// Programmet löser in hur mycket en vara kostar per styck, hur många enheter av varan
 // som köpts samt beräknar och skriver ut totala priset efter att 10 procents rabatt erhållits om
 // totalpriset överstiger 1000 kr.
 
@@ -17,6 +17,7 @@ public class Pris2 {
         double rabatt;
         double rabattFaktor;
 
+        // Different discounts are applied depending on the amount to be payed
         if (bruttoPris > 750)
             rabattFaktor = 0.05;
         else if (bruttoPris > 1500)

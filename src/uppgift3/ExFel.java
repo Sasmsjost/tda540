@@ -1,3 +1,5 @@
+package uppgift3;
+
 import javax.swing.*;
 
 public class ExFel {
