@@ -17,15 +17,14 @@ public class CalculatePi {
         double PI = 0;
 
         for(int i = 0; i < iterations; i++) {
-            double fraction = getFraction(i);
-            PI += fraction;
+            PI += getFraction(i);
         }
 
         return PI * 4;
     }
 
     /**
-     * Calculate PI by breaking when a fraction reaches a certain size
+     * Calculate PI by breaking when a fraction reaches a certain size (Not inclusive)
      */
     private static double calculateWithSmallestFraction(double smallestFraction) {
         double PI = 0;
