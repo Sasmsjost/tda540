@@ -7,11 +7,11 @@ public class ThrowCalculator {
     public static void main(String[] args) {
         final double GRAVITY = 9.82;
 
-        String indata = JOptionPane.showInputDialog("What is the velocity? (m/s)");
-        double velocity = Double.parseDouble(indata);
+        String input = JOptionPane.showInputDialog("What is the velocity? (m/s)");
+        double velocity = Double.parseDouble(input);
 
-        indata = JOptionPane.showInputDialog("What angle are you firing at? (º)");
-        double angle = Integer.parseInt(indata);
+        input = JOptionPane.showInputDialog("What angle are you firing at? (º)");
+        double angle = Integer.parseInt(input);
         double radAngle = Math.toRadians(angle);
 
         // The original formulas can be found in the course material

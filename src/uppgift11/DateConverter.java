@@ -5,10 +5,10 @@ import java.util.Scanner;
 
 public class DateConverter {
     public static void main(String[] args) {
-        String input = JOptionPane.showInputDialog("Enter a date in the format yymmdd");
-        Scanner parser = new Scanner(input);
+        String rawInput = JOptionPane.showInputDialog("Enter a date in the format yymmdd");
+        Scanner input = new Scanner(rawInput);
 
-        int rest = parser.nextInt();
+        int rest = input.nextInt();
 
         // Can be seen as using the mask 110000 and letting rest be 001111
         int year = rest / 10000;

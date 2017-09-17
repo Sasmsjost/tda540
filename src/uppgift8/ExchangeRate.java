@@ -4,9 +4,8 @@ import javax.swing.*;
 
 public class ExchangeRate {
     public static void main(String[] args) {
-        String input;
+        String input = JOptionPane.showInputDialog("Please specify the exchange rate between EURO and SEK, \n\tEx. Enter '10' for 1 EURO = 10 SEK");
 
-        input = JOptionPane.showInputDialog("Please specify the exchange rate between EURO and SEK, \n\tEx. Enter '10' for 1 EURO = 10 SEK");
         double exchangeRate = Double.parseDouble(input);
 
         input = JOptionPane.showInputDialog("How many SEK would you like to exchange?");
