@@ -8,6 +8,11 @@ public class BoatClassifier {
         final double CLASSIFICATION_MARGIN = 0.05;
 
         String rawInput = JOptionPane.showInputDialog("Enter the boats 'omfång'(d), 'segelyta'(A), 'längd'(L) and 'fribordshöjd'(f)");
+        if (rawInput == null || rawInput.isEmpty()){
+            System.out.println("Cancel pressed or input was none, exiting");
+            System.exit(0);
+        }
+
         Scanner input = new Scanner(rawInput);
 
         double d = input.nextDouble();

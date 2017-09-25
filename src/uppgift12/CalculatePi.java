@@ -42,7 +42,7 @@ public class CalculatePi {
         // We also know that code should not be explained if not necessary and
         // in cases like this, refactoring the loop would be good. This solution
         // was on the other hand nice to look at.
-        for(int i = 0; Math.abs(fraction = getFraction(i)) > smallestFraction; i++) {
+        for(int i = 0; Math.abs(fraction = getFraction(i)) >= smallestFraction; i++) {
             PI += fraction;
         }
 

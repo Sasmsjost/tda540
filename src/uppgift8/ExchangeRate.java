@@ -5,10 +5,17 @@ import javax.swing.*;
 public class ExchangeRate {
     public static void main(String[] args) {
         String input = JOptionPane.showInputDialog("Please specify the exchange rate between EURO and SEK, \n\tEx. Enter '10' for 1 EURO = 10 SEK");
-
+        if (input == null || input.isEmpty()){
+            System.out.println("Cancel pressed or input was none, exiting");
+            System.exit(0);
+        }
         double exchangeRate = Double.parseDouble(input);
 
         input = JOptionPane.showInputDialog("How many SEK would you like to exchange?");
+        if (input == null || input.isEmpty()){
+            System.out.println("Cancel pressed or input was none, exiting");
+            System.exit(0);
+        }
         double sek = Double.parseDouble(input);
 
         double euro = sek / exchangeRate;
