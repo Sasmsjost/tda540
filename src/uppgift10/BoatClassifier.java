@@ -1,5 +1,7 @@
 package uppgift10;
 
+import Helpers.ValidInput;
+
 import javax.swing.*;
 import java.util.Scanner;
 
@@ -8,10 +10,7 @@ public class BoatClassifier {
         final double CLASSIFICATION_MARGIN = 0.05;
 
         String rawInput = JOptionPane.showInputDialog("Enter the boats 'omfång'(d), 'segelyta'(A), 'längd'(L) and 'fribordshöjd'(f)");
-        if (rawInput == null || rawInput.isEmpty()){
-            System.out.println("Cancel pressed or input was none, exiting");
-            System.exit(0);
-        }
+        ValidInput.ensure(rawInput);
 
         Scanner input = new Scanner(rawInput);
 

@@ -1,5 +1,7 @@
 package uppgift11;
 
+import Helpers.ValidInput;
+
 import javax.swing.*;
 import java.util.Scanner;
 
@@ -7,10 +9,7 @@ public class DateConverter {
     public static void main(String[] args) {
         while(true){
             String rawInput = JOptionPane.showInputDialog("Enter a date in the format yymmdd");
-            if (rawInput == null || rawInput.isEmpty()){
-                System.out.println("Cancel pressed or input was none, exiting");
-                System.exit(0);
-            }
+            ValidInput.ensure(rawInput);
             Scanner input = new Scanner(rawInput);
 
             int rest = input.nextInt();

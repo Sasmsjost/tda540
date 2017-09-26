@@ -5,8 +5,8 @@ public class CalculatePi {
     public static void main(String[] args) {
         double pi1 = calculateWithIterationCount(500);
         double pi2 = calculateWithSmallestFraction(0.00001);
-        System.out.println("With 500 iterations" + pi1);
-        System.out.println("When breaking at the fraction 0.00001" + pi2);
+        System.out.println("With 500 iterations: " + pi1);
+        System.out.println("When breaking at the fraction 0.00001: " + pi2);
     }
 
     /**
@@ -24,7 +24,7 @@ public class CalculatePi {
 
     /**
      * Calculate PI by breaking when a fraction reaches a certain size.
-     * The smallestFraction provided will not be included in the calculation of PI
+     * The smallestFraction provided will be included in the calculation of PI
      */
     private static double calculateWithSmallestFraction(double smallestFraction) {
         double PI = 0;

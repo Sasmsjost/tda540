@@ -7,17 +7,14 @@ public class EasterDate {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
 
-        // When the application exists, print "Shutting down!" to the user
-        Runtime.getRuntime().addShutdownHook(new Thread(()->System.out.println("\nShutting down!")));
-
-        // Loop until crlt-d (End of input) is hit, crlt-c will also quit the program but in a more forceful manner
-        do {
-            System.out.print("Please enter the year you would like to know when easter was: ");
+        while(true) {
+            System.out.println("Please enter the year you would like to know when easter was: ");
             if (input.hasNextInt()) {
-                int year = input.nextInt();
+                String userInput = input.nextLine();
 
-                // Treat the rest of the input as junk data
-                input.next();
+                // Discard junk data, only parses the first date the user enters
+                Scanner inputParser = new Scanner(userInput);
+                int year = inputParser.nextInt();
 
                 if (year >= 1900 && year <= 2099) {
                     String date = getEasterDate(year);
@@ -26,12 +23,11 @@ public class EasterDate {
                     System.out.println("Only the years between 1900 and 2099 are valid");
                 }
             } else {
-                // Treat the rest of the input as junk data
-                input.next();
+                input.nextLine();
                 System.out.println("The input was not a valid year");
 
             }
-        } while(input.hasNextLine());
+        }
     }
 
     private static String getEasterDate(int year) {
