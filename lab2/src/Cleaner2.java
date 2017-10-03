@@ -20,7 +20,7 @@ public class Cleaner2 {
     //        The robot is located in beginning of one of the corridors, facing the corridor
     //        in counter-clockwise direction.
     //        Each corridor has a length of five cells.
-    //        All cells in the corridors are dark.
+    //        Some cells in the corridors are dark.
     //after:  All cells in the corridors are light.
     //        The robot has the same location and facing the same direction
     private void cleanCorridors() {
@@ -30,7 +30,7 @@ public class Cleaner2 {
         }
 
     }//cleanCorridors
-//Cleaner
+
 
     private void clearCorridorInFront(int corridorLength) {
         for (int i = 0; i <= corridorLength-2; i++) {
@@ -40,4 +40,4 @@ public class Cleaner2 {
             robot.move();
         }
     }
-}
+}//Cleaner
