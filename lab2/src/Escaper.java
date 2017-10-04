@@ -66,6 +66,16 @@ public class Escaper {
         }
     }
 
+    /**
+     * Before: Any
+     * After: Same
+     *
+     * Using a bitmask, check if both sides are blocked
+     *
+     * @param surroundings - An integer with the scan data from the robots surroundings,
+     *                     can be retrieved from scanSurroundings
+     * @return whether both sides are blocked
+     */
     private boolean bothSidesAreBlocked(int surroundings) {
         boolean left = sideIsBlocked(LEFT, surroundings);
         boolean right = sideIsBlocked(RIGHT, surroundings);
@@ -73,12 +83,27 @@ public class Escaper {
         return left && right;
     }
 
+    /**
+     * Before: Any
+     * After: Same
+     *
+     * Using a bitmask, check if side is blocked
+     *
+     * @param side - A bitmask for the side to check: RIGHT, LEFT, TOP, BOTTOM
+     * @param surroundings - A bit field with the scan data from the robots surroundings,
+     *                     can be retrieved from scanSurroundings
+     * @return whether the side is blocked
+     */
     private boolean sideIsBlocked(int side, int surroundings) {
-	    return (surroundings & side) > 0;
+	    return (surroundings & side) == side;
     }
 
-    // Before: Any
-    // After: Same
+    /**
+     * Before: Any
+     * After: Same
+     *
+     * @return A bit field representing the surroundings. A bit set to 1 means blocked
+     */
     private int scanSurroundings() {
 	    int value = robot.frontIsClear() ? 0:FRONT;
 	    robot.turnLeft();
@@ -110,6 +135,8 @@ public class Escaper {
         robot.turnLeft();
     }
 
+    // Before: Any without a wall in front
+    // After: Same orientation, on cell forward
     private void forward() {
         robot.move();
     }

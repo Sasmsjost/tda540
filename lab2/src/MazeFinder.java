@@ -24,13 +24,13 @@ public class MazeFinder {
     //        The robot is at the entrance of the maze.
     //after:  The robot is at the exit of the maze
     private void findExit() {
-        while (!endOfWorld()) {
+        while (!atEndOfWorld()) {
             findDirection();
         }
 
     }// findExit
 
-    private boolean endOfWorld() {
+    private boolean atEndOfWorld() {
         return robot.atEndOfWorld() && robot.getLocation() != mazeStart;
     }
 
@@ -79,7 +79,7 @@ public class MazeFinder {
     }
 
     private boolean handleDeadEnd() {
-        if (deadEnd()) {
+        if (isDeadEnd()) {
             turnAround();
             return true;
         } else {
@@ -87,20 +87,17 @@ public class MazeFinder {
         }
     }
 
-    private boolean isLeftClear() {
-        boolean clear = false;
-        robot.turnLeft();
-        clear = robot.frontIsClear();
-        turnRight();
-        return clear;
-    }
+    private boolean isDeadEnd() {
+        boolean frontClear = robot.frontIsClear();
 
-    private boolean isRightClear() {
-        boolean clear = false;
-        turnRight();
-        clear = robot.frontIsClear();
         robot.turnLeft();
-        return clear;
+        boolean leftClear = robot.frontIsClear();
+
+        turnAround();
+        boolean rightClear = robot.frontIsClear();
+
+        robot.turnLeft();
+        return !frontClear && ! leftClear && !rightClear;
     }
 
     private void turnRight() {
@@ -112,18 +109,5 @@ public class MazeFinder {
     private void turnAround() {
         robot.turnLeft();
         robot.turnLeft();
-    }
-
-    private boolean deadEnd() {
-        boolean frontClear = robot.frontIsClear();
-
-        robot.turnLeft();
-        boolean leftClear = robot.frontIsClear();
-
-        turnAround();
-        boolean rightClear = robot.frontIsClear();
-
-        robot.turnLeft();
-        return !frontClear && ! leftClear && !rightClear;
     }
 }//MazeFinder
