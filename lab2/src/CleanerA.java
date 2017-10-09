@@ -30,7 +30,7 @@ public class CleanerA {
 //CleanerA
 
     private void clearCorridorInFront(int corridorLength) {
-        for (int i = 0; i <= corridorLength-2; i++) {
+        for (int i = 0; i < corridorLength-1; i++) {
             robot.makeLight();
             robot.move();
         }

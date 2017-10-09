@@ -1,17 +1,10 @@
-/**
- * Created by johlenni on 2017-10-01.
- */
-
 public class CleanerE {
-    static Robot robot;
+    private Robot robot;
 
     public static void main(String[] args) {
         CleanerE cleaner = new CleanerE();
         cleaner.createEnviroment();
-
-        Location pointOfStart = robot.getLocation();
-        int directionOfStart = robot.getDirection();
-        cleaner.cleanCorridorUpToPosition(pointOfStart, directionOfStart);
+        cleaner.cleanCorridors();
     } //main
 
     private void createEnviroment() {
@@ -19,6 +12,13 @@ public class CleanerE {
         robot = new Robot(1, world.getNumCols() - 4, Robot.SOUTH, world);
         robot.setDelay(250);
     }//createEnviroment
+
+    private void cleanCorridors() {
+        Location endPosition = robot.getLocation();
+        int endDirection = robot.getDirection();
+
+        cleanCorridorUpToPosition(endPosition, endDirection);
+    }
 
     //before: The room has four corridors, forming a square
     //        The robot is located somewhere in one of the corridors, independent of start-rotation

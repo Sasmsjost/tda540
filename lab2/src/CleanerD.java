@@ -1,7 +1,3 @@
-/**
- * Created by johlenni on 2017-10-01.
- */
-
 public class CleanerD {
     private Robot robot;
 

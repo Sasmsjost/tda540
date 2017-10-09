@@ -1,16 +1,24 @@
-/**
- * Created by johlenni on 2017-10-01.
- */
-
 public class CleanerF {
-    static Robot robot;
+    private Robot robot;
 
     public static void main(String[] args) {
         CleanerF cleaner = new CleanerF();
         cleaner.createEnviroment();
+        cleaner.cleanCorridors();
+    } //main
 
-        Location endPoint = new Location(1, 8);
-        boolean foundTarget = cleaner.cleanCorridorUpToPosition(endPoint);
+    private void createEnviroment() {
+        RobotWorld world = RobotWorld.load("src/loop.txt");
+        robot = new Robot(2, world.getNumCols() - 2, Robot.SOUTH, world);
+        robot.setDelay(250);
+    }//createEnviroment
+
+    private void cleanCorridors() {
+        // End position is the target position described in the specs. by
+        // """ städa” korridoren tills en given position nåtts eller om en sådan position inte påträffas i korridoren tills slutet av korridoren """
+        // Now set to an invalid position which cant be reached.
+        Location endPoint = new Location(0, 0);
+        boolean foundTarget = cleanCorridorUpToPosition(endPoint);
 
         if(foundTarget) {
             System.out.println("The target position was reached!");
@@ -18,13 +26,7 @@ public class CleanerF {
             System.out.println("Sorry mate! Could not find what you where looking for, cleaned the whole place instead.");
 
         }
-    } //main
-
-    private void createEnviroment() {
-        RobotWorld world = RobotWorld.load("src/loop.txt");
-        robot = new Robot(1, world.getNumCols() - 4, Robot.WEST, world);
-        robot.setDelay(250);
-    }//createEnviroment
+    }
 
     //before: The corridors form a closed loop.
     //        The robot is located somewhere in one of the corridors, independent of start-rotation
