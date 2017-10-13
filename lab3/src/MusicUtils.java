@@ -63,12 +63,7 @@ public class MusicUtils {
     }
 
     private static double[] averageMany(double[]... tones) {
-        assert (tones.length > 0);
         int length = tones[0].length;
-
-        for (int i = 0; i < tones.length; i++) {
-            assert (tones.length == length);
-        }
         double[] data = new double[length];
 
         for (int i = 0; i < length; i++) {
