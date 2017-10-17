@@ -10,8 +10,13 @@ import java.util.function.BiFunction;
 public class MusicUtils {
 
     private static Random random = new Random();
-    private static double dampening = 0.498;
+    public static double dampening = 0.498;
 
+    /**
+     * Loads a list of notes in the form of a time(int) and freq (double)- pair, for each note.
+     * The format should be it's own class, but since we aren't allowed to use custom classes we use built in classes
+     * of the right type.
+     */
     public static ArrayList<Pair<Integer, Double>> loadSongDescription(String fileName) {
         File file = new File(fileName);
         try {
@@ -30,8 +35,16 @@ public class MusicUtils {
         }
     }
 
-    public static Song descriptionToSong(ArrayList<Pair<Integer, Double>> songDescription, double durationModifier, BiFunction<Integer, Double, double[]> operation) {
+    /**
+     * Converting a description to a song is separated from reading a file since it's to
+     * different processes which are independent of each other.
+     */
+    public static Song descriptionToSong(ArrayList<Pair<Integer, Double>> songDescription,
+                                         double durationModifier,
+                                         BiFunction<Integer, Double, double[]> operation) {
+
         double totalDuration = 0;
+
         for (Pair<Integer, Double> desc : songDescription) {
             double duration = desc.getValue();
             totalDuration += duration * durationModifier;

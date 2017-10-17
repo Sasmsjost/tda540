@@ -4,17 +4,35 @@ import java.util.ArrayList;
 import java.util.function.BiFunction;
 
 public class Main {
-    // Run with filename speed instrument(harmonic or note)
-    public static void main(String[] args) {
-        BiFunction<Integer, Double, double[]> instrument = MusicUtils::harmonic;
+    static String fileName;
+    static double speed = 1;
+    static BiFunction<Integer, Double, double[]> instrument = MusicUtils::harmonic;
 
+    // Run with filename speed instrument(harmonic or note) dampening
+    // Required: filename
+    // Optional: speed, instrument, dampening
+    public static void main(String[] args) {
+        parseArgs(args);
+
+        ArrayList<Pair<Integer, Double>> desc = MusicUtils.loadSongDescription(fileName);
+        if(desc != null) {
+            Song song = MusicUtils.descriptionToSong(desc, speed, instrument);
+            SoundDevice device = new SoundDevice();
+            song.play(device);
+        } else {
+            System.out.println(String.format("The file with name %s was not found", fileName));
+        }
+    }//main
+
+
+    public static void parseArgs(String[] args) {
         if(args.length < 1) {
             System.out.println("Please specify a file to read");
+            System.exit(1);
             return;
         }
-        String fileName = args[0];
+        fileName = args[0];
 
-        double speed = 1;
         if(args.length >= 2) {
             speed = 1 / Double.parseDouble(args[1]);
         }
@@ -35,14 +53,9 @@ public class Main {
             }
         }
 
-        ArrayList<Pair<Integer, Double>> desc = MusicUtils.loadSongDescription(fileName);
-        if(desc != null) {
-            Song song = MusicUtils.descriptionToSong(desc, speed, instrument);
-            SoundDevice device = new SoundDevice();
-            song.play(device);
-        } else {
-            System.out.println(String.format("The file with name %s was not found", fileName));
+        if(args.length >= 4) {
+            MusicUtils.dampening = Double.parseDouble(args[3]);
         }
-    }//main
+    }
 
 }//Main
