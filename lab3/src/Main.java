@@ -1,34 +1,41 @@
-public class Main {
-    static String fileName;
-    static double pace = 1;
+import java.io.File;
 
-    // Run with "filename pace" as cli arguments, both are required
+public class Main {
+    static File file;
+    static double tempo;
+
+    // Run with "filename tempo" as cli arguments, both are required
     public static void main(String[] args) {
         parseArgs(args);
 
-        Song song = MusicUtils.loadSongFromFile(fileName, pace);
+        Song song = MusicUtils.loadSongFromFile(file, tempo);
         if(song != null) {
             SoundDevice device = new SoundDevice();
             song.play(device);
         } else {
-            System.out.println(String.format("The file with name %s was not found", fileName));
+            String msg = String.format(
+                    "The file with path:\n\t%s\n was not found or could not be read.",
+                    file.getAbsoluteFile());
+            System.out.println(msg);
         }
     }
 
     public static void parseArgs(String[] args) {
-        if(args.length < 1) {
-            System.out.println("Please specify a file path and a pace.\nEx.\nexecutable lab3/src/elise.txt 120\n\n");
+        if(args.length < 2) {
+            System.out.println("Please specify a file path and a tempo.\nEx.\n\t./executable_name lab3/src/elise.txt 120");
             System.exit(1);
-            return;
-        }
-        fileName = args[0];
-
-        if(args.length >= 2) {
-            pace = 240.0 / Double.parseDouble(args[1]);
         }
 
-        if(args.length >= 4) {
-            MusicUtils.dampening = Double.parseDouble(args[3]);
+        {
+            String fileName = args[0];
+            file = new File(fileName);
+        }
+
+        try {
+            tempo = 240.0 / Double.parseDouble(args[1]);
+        } catch (RuntimeException ex) {
+            System.out.println("The tempo specified was invalid, please enter the tempo as a number");
+            System.exit(1);
         }
     }
 

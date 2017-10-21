@@ -10,17 +10,16 @@ public class MusicUtils {
     private static Random random = new Random();
     public static double dampening = 0.498;
 
-    public static Song loadSongFromFile(String fileName, double pace) {
+    public static Song loadSongFromFile(File file, double tempo) {
         ArrayList<double[]> notes = new ArrayList<>();
         double songDuration = 0;
 
         Scanner fileScanner = null;
         try {
-            File file = new File(fileName);
             fileScanner = new Scanner(file);
             while (fileScanner.hasNextDouble()) {
                 int pitch = fileScanner.nextInt();
-                double duration = fileScanner.nextDouble() * pace;
+                double duration = fileScanner.nextDouble() * tempo;
                 double[] note = harmonic(pitch, duration);
 
                 notes.add(note);
