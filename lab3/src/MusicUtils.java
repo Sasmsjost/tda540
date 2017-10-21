@@ -1,63 +1,44 @@
-import javafx.util.Pair;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.function.BiFunction;
 
 public class MusicUtils {
 
     private static Random random = new Random();
     public static double dampening = 0.498;
 
-    /**
-     * Loads a list of notes in the form of a time(int) and freq (double)- pair, for each note.
-     * The format should be it's own class, but since we aren't allowed to use custom classes we use built in classes
-     * of the right type.
-     */
-    public static ArrayList<Pair<Integer, Double>> loadSongDescription(String fileName) {
-        File file = new File(fileName);
+    public static Song loadSongFromFile(String fileName, double pace) {
+        ArrayList<double[]> notes = new ArrayList<>();
+        double songDuration = 0;
+
+        Scanner fileScanner = null;
         try {
-            Scanner fileScanner = new Scanner(file);
-            ArrayList<Pair<Integer, Double>> songDescription = new ArrayList<>();
+            File file = new File(fileName);
+            fileScanner = new Scanner(file);
             while (fileScanner.hasNextDouble()) {
                 int pitch = fileScanner.nextInt();
-                double duration = fileScanner.nextDouble();
-                Pair<Integer, Double> desc = new Pair<>(pitch, duration);
+                double duration = fileScanner.nextDouble() * pace;
+                double[] note = harmonic(pitch, duration);
 
-                songDescription.add(desc);
+                notes.add(note);
+                songDuration += duration;
             }
-            return songDescription;
-        } catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException | InputMismatchException ex) {
             return null;
-        }
-    }
-
-    /**
-     * Converting a description to a song is separated from reading a file since it's to
-     * different processes which are independent of each other.
-     */
-    public static Song descriptionToSong(ArrayList<Pair<Integer, Double>> songDescription,
-                                         double durationModifier,
-                                         BiFunction<Integer, Double, double[]> operation) {
-
-        double totalDuration = 0;
-
-        for (Pair<Integer, Double> desc : songDescription) {
-            double duration = desc.getValue();
-            totalDuration += duration * durationModifier;
+        } finally {
+            if(fileScanner != null) {
+                fileScanner.close();
+            }
         }
 
-        int songDuration = (int) Math.round(Math.ceil(totalDuration));
-        Song song = new Song(songDuration);
+        int approximateSongDuration = (int) Math.ceil(songDuration);
+        Song song = new Song(approximateSongDuration);
 
-        for (Pair<Integer, Double> desc : songDescription) {
-            int pitch = desc.getKey();
-            double duration = desc.getValue() * durationModifier;
-            double[] note = operation.apply(pitch, duration);
-            song.add(note);
+        for (double[] note : notes) {
+            song.add((note));
         }
 
         return song;
@@ -75,6 +56,10 @@ public class MusicUtils {
         return averageMany(tone1, tone2);
     }
 
+    /**
+     * All tones provided must be of the same length,
+     * an IndexOutOfBoundsException will otherwise be thrown
+     */
     private static double[] averageMany(double[]... tones) {
         int length = tones[0].length;
         double[] data = new double[length];
@@ -84,7 +69,7 @@ public class MusicUtils {
             for (double[] tone : tones) {
                 toneSum += tone[i];
             }
-            data[i] = toneSum;
+            data[i] = toneSum / tones.length;
         }
 
         return data;
@@ -97,8 +82,11 @@ public class MusicUtils {
 
     public static double[] pluck(double freq, double duration) {
         int length = (int) (duration * SoundDevice.SAMPLING_RATE);
-        int randomLength = (int) (SoundDevice.SAMPLING_RATE / freq);
         double[] data = new double[length];
+
+        int randomLength = (int) (SoundDevice.SAMPLING_RATE / freq);
+        // Ensure that we don't get an IndexOutOfBoundsException for short durations
+        randomLength = Math.min(length, randomLength);
 
         for (int i = 0; i < randomLength; i++) {
             data[i] = random.nextDouble() * 2 - 1;
@@ -120,6 +108,6 @@ public class MusicUtils {
             a[i] = Math.sin(i * dx);
         }
         return a;
-    }//sine
+    }
 
 }
