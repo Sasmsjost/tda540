@@ -37,7 +37,7 @@ public class MusicUtils {
         Song song = new Song(approximateSongDuration);
 
         for (double[] note : notes) {
-            song.add((note));
+            song.add(note);
         }
 
         return song;
