@@ -84,7 +84,7 @@ public class MusicUtils {
         double[] data = new double[length];
 
         int randomLength = (int) (SoundDevice.SAMPLING_RATE / freq);
-        // Ensure that we don't get an IndexOutOfBoundsException for short durations
+        // Ensure that we don't get an IndexOutOfBoundsException for short durations or low frequencies
         randomLength = Math.min(length, randomLength);
 
         for (int i = 0; i < randomLength; i++) {
