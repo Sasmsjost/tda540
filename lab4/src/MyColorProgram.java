@@ -42,19 +42,22 @@ public class MyColorProgram {
         double[] luminanceWeights = {0.299, 0.587, 0.114};
         for (int row = 0; row < samples.length; row++) {
             for (int col = 0; col < samples[row].length; col++) {
-                int luminance = 0;
-
+                int grayColour = calculateLuminance(samples[row][col]);
                 for (int c = 0; c < samples[row][col].length; c++) {
-                    luminance += (int) ((double)samples[row][col][c] * luminanceWeights[c]);
+                    newSamples[row][col][c] = grayColour;
                 }
-
-                for (int c = 0; c < samples[row][col].length; c++) {
-                    newSamples[row][col][c] = luminance;
-                }
-
             }
         }
         return newSamples;
+    }
+
+    public static int calculateLuminance(int[] rgb){
+        double[] luminanceWeights = {0.299, 0.587, 0.114};
+        int luminance = 0;
+        for (int c = 0; c < rgb.length; c++) {
+            luminance += (int) ((double)rgb[c] * luminanceWeights[c]);
+        }
+        return luminance;
     }
 
     public static int[][][] toBlackWhite(int[][][] samples){
@@ -62,24 +65,21 @@ public class MyColorProgram {
         double[] luminanceWeights = {0.299, 0.587, 0.114};
         for (int row = 0; row < samples.length; row++) {
             for (int col = 0; col < samples[row].length; col++) {
-                int luminance = 0;
-
+                int grayColour = calculateLuminance(samples[row][col]);
                 for (int c = 0; c < samples[row][col].length; c++) {
-                    luminance += (int) ((double)samples[row][col][c] * luminanceWeights[c]);
-                }
-
-                for (int c = 0; c < samples[row][col].length; c++) {
-                    newSamples[row][col][c] = luminance;
-                    if (newSamples[row][col][c] < 128){
-                        newSamples[row][col][c] = 0;
-                    }
-                    else {
-                        newSamples[row][col][c] = 255;
-                    }
+                    newSamples[row][col][c] = sgnOfPixel(grayColour);
                 }
             }
         }
         return newSamples;
+    }
+
+    private static int sgnOfPixel(int color) {
+        return isDarkPixel(color) ? 0 : 255;
+    }
+
+    private static boolean isDarkPixel(int color) {
+        return color < 128;
     }
 
     public static int[][][] sharpenOne(int[][][] samples) {
