@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class MyGrayProgram {
     public static void main(String[] args) throws Exception {
         int[][] original = GrayImage.read("lab4/src/mushroom.jpeg");
@@ -54,8 +56,27 @@ public class MyGrayProgram {
     }
 /*
     public static int[][] contour(int[][] samples){
+        //jag vill ta ut en fler dim. lista/array som ser ut enligt [][][],[]_[],[][][], och sendan använda någon method
+        // som kollar om något av innehållet är vitt. Detta förutsatt att pixel markerad med _ är svart.
+        //tänker mig att vi efteråt gör ramen svart.
+        int[][] newSamples = new int[samples.length][samples[0].length];
+        int orgColour = 0;
+        int[][] pixelSurrounding = new int[3][3];
+        for (int row = 1; row < samples.length; row = row + 1) {
+            for (int col = 1; col < samples[row].length; col = col + 1) {
+                orgColour = samples[row][col];
+                pixelSurrounding[0] = samples[row-1][col-1:col+1]
+                if (orgColour == 255 && hasWhiteNeighbour{
+
+                }
+
+            }
+        }
+        return newSamples;
 
     }
 */
-
+    private static boolean makeBorderWhite(int[][] sample){
+        return false;
+    }
 }
