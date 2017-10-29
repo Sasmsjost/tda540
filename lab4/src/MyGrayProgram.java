@@ -95,8 +95,8 @@ public class MyGrayProgram {
         int width = samples[0].length - 1;
         return row == 0
                 || col == 0
-                || row == width
-                || col == height;
+                || row == height
+                || col == width;
     }
 
     /**
