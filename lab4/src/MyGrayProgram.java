@@ -24,10 +24,9 @@ public class MyGrayProgram {
 
     public static int[][] invert(int[][] samples) {
         int[][] newSamples = new int[samples.length][samples[0].length];
-        int orgColour = 0;
         for (int row = 0; row < samples.length; row = row + 1) {
             for (int col = 0; col < samples[row].length; col = col + 1) {
-                orgColour = samples[row][col];
+                int orgColour = samples[row][col];
                 newSamples[row][col] = 255 - orgColour;
             }
         }
@@ -36,10 +35,9 @@ public class MyGrayProgram {
 
     public static int[][] toBlackWhite(int[][] samples) {
         int[][] newSamples = new int[samples.length][samples[0].length];
-        int orgColour = 0;
         for (int row = 0; row < samples.length; row = row + 1) {
             for (int col = 0; col < samples[row].length; col = col + 1) {
-                orgColour = samples[row][col];
+                int orgColour = samples[row][col];
                 newSamples[row][col] = sgnOfPixel(orgColour);
             }
         }
@@ -93,8 +91,8 @@ public class MyGrayProgram {
      * Is the pixel on the edge of the image
      */
     private static boolean isPixelOnEdge(int row, int col, int[][] samples) {
-        int width = samples.length - 1;
-        int height = samples[0].length - 1;
+        int height = samples.length - 1;
+        int width = samples[0].length - 1;
         return row == 0
                 || col == 0
                 || row == width
