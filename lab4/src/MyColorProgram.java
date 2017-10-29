@@ -84,7 +84,8 @@ public class MyColorProgram {
     }
 
     /**
-     * The provided matrix must be of an odd length, ex [3][3] or [5][5]
+     * The provided matrix must be of an odd length, ex [3][3] or [5][5],
+     * Can return values outside of the 0-255 bounds
      */
     private static int applyMatrix(int row0, int col0, int index, int[][] matrix, int[][][] samples) {
         int width = samples.length - 1;
