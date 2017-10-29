@@ -75,7 +75,8 @@ public class MyColorProgram {
         for (int row = 0; row < samples.length; row++) {
             for (int col = 0; col < samples[row].length; col++) {
                 for (int c = 0; c < samples[row][col].length; c++) {
-                    newSamples[row][col][c] = applyMatrix(row, col, c, matrix, samples);
+                    int color = applyMatrix(row, col, c, matrix, samples);
+                    newSamples[row][col][c] = constrain(color, 0, 255);
                 }
             }
         }
@@ -109,7 +110,7 @@ public class MyColorProgram {
             }
         }
 
-        return constrain(color, 0, 255);
+        return color;
     }
 
     private static boolean outOfBounds(int val, int min, int max) {
