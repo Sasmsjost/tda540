@@ -1,10 +1,9 @@
 public class MyColorProgram {
     public static void main(String[] args) throws Exception {
         int[][][] original = ColorImage.read("lab4/src/mushroom.jpeg");
-        int[][][] manipulated = leftRight(original);
+        int[][][] manipulated = toBlackWhite(original);
 //      ColorImage.write("upDownMushroom.jpeg", manipulated);
-        //ColorImageWindow iw = new ColorImageWindow(original, manipulated);
-        toBlackWhite(original);
+        ColorImageWindow iw = new ColorImageWindow(original, manipulated);
     }//main
 
     public static int[][][] upDown(int[][][] samples) {
@@ -38,37 +37,49 @@ public class MyColorProgram {
         return newSamples;
     }
 
-    public static void toGray(int[][][] samples) throws Exception{
-        int[][] newSamples = new int[samples.length][samples[0].length];
-        double[] l = {0.299, 0.587, 0.114};
-        for (int row = 0; row < samples.length; row++) {
-            for (int col = 0; col < samples[row].length; col++) {
-                int grayLuminance = 0;
-                for (int c = 0; c < samples[row][col].length; c++) {
-                    grayLuminance += (int) ((double)samples[row][col][c] * l[c]);
-                }
-                newSamples[row][col] = grayLuminance;
-            }
-        }
-        int[][] original = GrayImage.read("lab4/src/mushroom.jpeg");
-        GrayImageWindow iw = new GrayImageWindow(original, newSamples);
-    }
-
-    public static void toBlackWhite(int[][][] samples) throws Exception{
-        int[][] graySample = new int[samples.length][samples[0].length];
+    public static int[][][] toGray(int[][][] samples){
+        int[][][] newSamples = new int[samples.length][samples[0].length][3];
         double[] luminanceWeights = {0.299, 0.587, 0.114};
         for (int row = 0; row < samples.length; row++) {
             for (int col = 0; col < samples[row].length; col++) {
                 int luminance = 0;
+
                 for (int c = 0; c < samples[row][col].length; c++) {
                     luminance += (int) ((double)samples[row][col][c] * luminanceWeights[c]);
                 }
-                graySample[row][col] = luminance;
+
+                for (int c = 0; c < samples[row][col].length; c++) {
+                    newSamples[row][col][c] = luminance;
+                }
+
             }
         }
-        int[][] blackWhiteSample = MyGrayProgram.toBlackWhite(graySample);
-        int[][] original = GrayImage.read("lab4/src/mushroom.jpeg");
-        GrayImageWindow iw = new GrayImageWindow(original, blackWhiteSample);
+        return newSamples;
+    }
+
+    public static int[][][] toBlackWhite(int[][][] samples){
+        int[][][] newSamples = new int[samples.length][samples[0].length][3];
+        double[] luminanceWeights = {0.299, 0.587, 0.114};
+        for (int row = 0; row < samples.length; row++) {
+            for (int col = 0; col < samples[row].length; col++) {
+                int luminance = 0;
+
+                for (int c = 0; c < samples[row][col].length; c++) {
+                    luminance += (int) ((double)samples[row][col][c] * luminanceWeights[c]);
+                }
+
+                for (int c = 0; c < samples[row][col].length; c++) {
+                    newSamples[row][col][c] = luminance;
+                    if (newSamples[row][col][c] < 128){
+                        newSamples[row][col][c] = 0;
+                    }
+                    else {
+                        newSamples[row][col][c] = 255;
+                    }
+                }
+            }
+        }
+        return newSamples;
     }
 
     public static int[][][] sharpenOne(int[][][] samples) {
