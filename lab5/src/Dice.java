@@ -1,8 +1,10 @@
 import java.util.Random;
 
 public class Dice {
+    // Reusing an instance of random ensures that we get an even distribution of random numbers.
+    private static Random random = new Random();
     private int sides;
-    public int result;
+    private int lastRoll;
 
     public Dice(int sides){
         this.sides = sides;
@@ -13,10 +15,9 @@ public class Dice {
     }
 
     public int roll(){
-        Random r = new Random();
-        int ran = r.nextInt(this.sides)+1;
-        this.result = ran;
-        return ran;
+        int rollValue = random.nextInt(this.sides)+1;
+        this.lastRoll = rollValue;
+        return rollValue;
     }
 
 }
