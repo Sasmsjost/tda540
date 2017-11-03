@@ -39,7 +39,6 @@ public class MyColorProgram {
 
     public static int[][][] toGray(int[][][] samples){
         int[][][] newSamples = new int[samples.length][samples[0].length][3];
-        double[] luminanceWeights = {0.299, 0.587, 0.114};
         for (int row = 0; row < samples.length; row++) {
             for (int col = 0; col < samples[row].length; col++) {
                 int grayColour = calculateLuminance(samples[row][col]);
@@ -51,32 +50,20 @@ public class MyColorProgram {
         return newSamples;
     }
 
-    public static int calculateLuminance(int[] rgb){
-        double[] luminanceWeights = {0.299, 0.587, 0.114};
-        int luminance = 0;
-        for (int c = 0; c < rgb.length; c++) {
-            luminance += (int) ((double)rgb[c] * luminanceWeights[c]);
-        }
-        return luminance;
-    }
-
     public static int[][][] toBlackWhite(int[][][] samples){
         int[][][] newSamples = new int[samples.length][samples[0].length][3];
-        double[] luminanceWeights = {0.299, 0.587, 0.114};
         for (int row = 0; row < samples.length; row++) {
             for (int col = 0; col < samples[row].length; col++) {
                 int grayColour = calculateLuminance(samples[row][col]);
+                int blackColor = sgnOfPixel(grayColour);
                 for (int c = 0; c < samples[row][col].length; c++) {
-                    newSamples[row][col][c] = sgnOfPixel(grayColour);
+                    newSamples[row][col][c] = blackColor;
                 }
             }
         }
         return newSamples;
     }
 
-    private static int sgnOfPixel(int color) {
-        return isDarkPixel(color) ? 0 : 255;
-    }
 
     private static boolean isDarkPixel(int color) {
         return color < 128;
@@ -169,6 +156,23 @@ public class MyColorProgram {
         }
 
         return color;
+    }
+
+    /**
+     * Ensure that we do not have to recreate the luminance weights array at every call.
+     * Java might be able to save the optimize this, but have not found any information about it.
+     */
+    private final static double[] luminanceWeights = {0.299, 0.587, 0.114};
+    public static int calculateLuminance(int[] rgb){
+        int luminance = 0;
+        for (int c = 0; c < rgb.length; c++) {
+            luminance += (int) ((double)rgb[c] * luminanceWeights[c]);
+        }
+        return luminance;
+    }
+
+    private static int sgnOfPixel(int color) {
+        return isDarkPixel(color) ? 0 : 255;
     }
 
     private static boolean outOfBounds(int val, int min, int max) {
