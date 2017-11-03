@@ -1,10 +1,18 @@
 public class Player1 {
-    public String name;
-    public Dice dice;
+    private String name;
+    private Dice dice;
 
-    public Player1(String playerName, int sides) {
+    public Player1(String playerName, Dice dice) {
         this.name = playerName;
-        this.dice = new Dice(sides);
+        this.dice = dice;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int rollDice() {
+        return dice.roll();
     }
 
 
