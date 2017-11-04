@@ -5,18 +5,19 @@ public class Lab5_skel {
     public static void main(String[] args) {
         // -- Del 1 --
 
-        doCommandLine();
-        System.out.println(toRobber("Hej på dig"));
-        System.out.println(toPigLatin("Hej på dig"));
+//        doCommandLine();
+//        System.out.println(toRobber("Hej på dig"));
+//        System.out.println(toPigLatin("Hej på dig"));
 
 
         // -- Del 2 --
 
-        //rollADice();
-        //letPlayerRoll();
-        //letTwoPlayersRollSameDice();
-        //letPlayerUseDiceCup();
-        //findPlayerWithMax();
+        rollADice();
+        letPlayerRoll();
+        letTwoPlayersRollSameDice();
+        letPlayerUseDiceCup();
+        letPlayerUseDiceCupWithToString();
+        findPlayerWithMax();
     }
 
     // ---------- Del 1 ---------------
@@ -58,14 +59,17 @@ public class Lab5_skel {
 
         for(int i = 0; i < text.length(); i++) {
             char character = text.charAt(i);
-            if(character == ' ' || character == '\n') {
-                robberSentence.append(character);
-            } else if(isVowel(character)) {
-                robberSentence.append(character);
+            if(Character.isLetter(character)) {
+                if (isVowel(character)) {
+                    robberSentence.append(character);
+                } else {
+                    char lcCharacter = Character.toLowerCase(character);
+                    robberSentence.append(character);
+                    robberSentence.append('o');
+                    robberSentence.append(lcCharacter);
+                }
             } else {
                 robberSentence.append(character);
-                robberSentence.append('o');
-                robberSentence.append(String.valueOf(character).toLowerCase());
             }
         }
 
@@ -85,7 +89,7 @@ public class Lab5_skel {
     }
 
     /**
-     * Only supports single line and will remove excessive whitespace
+     * Only supports a single line and will remove excessive whitespace
      */
     public static String toPigLatin(String text) {
         StringBuilder pigLatinSentence = new StringBuilder(text.length());
@@ -95,10 +99,10 @@ public class Lab5_skel {
             String word = textSplitter.next();
             char firstCharacter = word.charAt(0);
             char lastCharacter = word.charAt(word.length()-1);
-            String endingChar = " ";
+            String postFix = " ";
 
             if(lastCharacter == '.') {
-                endingChar = ".";
+                postFix = ".";
                 word = word.substring(0, word.length() -1);
             }
 
@@ -115,7 +119,7 @@ public class Lab5_skel {
                 pigLatinSentence.append("ay");
             }
 
-            pigLatinSentence.append(endingChar);
+            pigLatinSentence.append(postFix);
         }
 
         return pigLatinSentence.toString();
@@ -164,30 +168,91 @@ public class Lab5_skel {
     }
 
     // 6
-    public static void letPlayerRoll() {
-        Dice dice1 = new Dice(6);
-        Player1 player = new Player1("otto", dice1);
 
+    public static void letPlayerRoll() {
+        Dice dice = new Dice(6);
+        Player1 player = new Player1("otto", dice);
+
+        rollDiceAndPrintResult(player, 5);
+    }
+    // 7
+
+    public static void letTwoPlayersRollSameDice() {
+        Dice dice = new Dice(6);
+        Player1 player1 = new Player1("otto", dice);
+        Player1 player2 = new Player1("fia", dice);
+
+        rollDiceAndPrintResult(player1, 5);
+        rollDiceAndPrintResult(player2, 5);
+    }
+
+    private static void rollDiceAndPrintResult(Player1 player, int count) {
         System.out.println("Player is " + player.getName());
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < count; i++) {
             int roll = player.rollDice();
             System.out.print(roll + " ");
         }
         System.out.println("");
     }
 
-    // 7
-    public static void letTwoPlayersRollSameDice() {
-    }
-
     // 8
     public static void letPlayerUseDiceCup() {
+        DiceCup diceCup = createDiceCup(5);
+        Player2 player = new Player2("arne", diceCup);
+
+        for(int i = 0; i < 2; i++) {
+            int diceRoll = player.rollDice();
+            String result = String.format("%s %d", player.getName(), diceRoll);
+            System.out.println(result);
+        }
     }
 
     // 9
     // Same as above but toString overridden.
+    public static void letPlayerUseDiceCupWithToString() {
+        DiceCup diceCup = createDiceCup(5);
+        Player2 player = new Player2("arne", diceCup);
+
+        for(int i = 0; i < 2; i++) {
+            int diceRoll = player.rollDice();
+
+            System.out.println(diceCup);
+            String result = String.format("%s %d", player.getName(), diceRoll);
+            System.out.println(result);
+        }
+    }
+
+    private static DiceCup createDiceCup(int diceCount) {
+        Dice[] dices = new Dice[diceCount];
+        for(int i = 0; i < dices.length; i++) {
+            dices[i] = new Dice(6);
+        }
+
+        return new DiceCup(dices);
+    }
 
     // 10
     public static void findPlayerWithMax() {
+        Player2[] players = new Player2[5];
+
+        for(int i = 0; i < players.length; i++) {
+            String name = String.valueOf(i);
+            DiceCup cup = createDiceCup(5);
+            Player2 player = new Player2(name, cup);
+
+            players[i] = player;
+            player.rollDice();
+            System.out.println(player);
+        }
+
+        Player2 winningPlayer = players[0];
+        for(Player2 player : players) {
+            if(player.getLastRoll() > winningPlayer.getLastRoll()) {
+                winningPlayer = player;
+            }
+        }
+
+        String winningMessage = String.format("\n\nWinner: %s", winningPlayer);
+        System.out.println(winningMessage);
     }
 }

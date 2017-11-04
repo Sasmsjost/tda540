@@ -4,7 +4,7 @@ public class Dice {
     // Reusing an instance of random ensures that we get an even distribution of random numbers.
     private static Random random = new Random();
     private int sides;
-    private int lastRoll;
+    private int result;
 
     public Dice(int sides){
         this.sides = sides;
@@ -16,8 +16,12 @@ public class Dice {
 
     public int roll(){
         int rollValue = random.nextInt(this.sides)+1;
-        this.lastRoll = rollValue;
+        this.result = rollValue;
         return rollValue;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Dice{result=%s}", result);
+    }
 }
