@@ -5,19 +5,19 @@ public class Lab5_skel {
     public static void main(String[] args) {
         // -- Del 1 --
 
-//        doCommandLine();
-//        System.out.println(toRobber("Hej på dig"));
-//        System.out.println(toPigLatin("Hej på dig"));
+        doCommandLine();
+        System.out.println(toRobber("Hej på dig"));
+        System.out.println(toPigLatin("Hej på dig"));
 
 
         // -- Del 2 --
 
-        rollADice();
-        letPlayerRoll();
-        letTwoPlayersRollSameDice();
-        letPlayerUseDiceCup();
-        letPlayerUseDiceCupWithToString();
-        findPlayerWithMax();
+//        rollADice();
+//        letPlayerRoll();
+//        letTwoPlayersRollSameDice();
+//        letPlayerUseDiceCup();
+//        letPlayerUseDiceCupWithToString();
+//        findPlayerWithMax();
     }
 
     // ---------- Del 1 ---------------
@@ -85,7 +85,7 @@ public class Lab5_skel {
                 return true;
             }
         }
-        return false;  // Just for now
+        return false;
     }
 
     /**
@@ -101,8 +101,9 @@ public class Lab5_skel {
             char lastCharacter = word.charAt(word.length()-1);
             String postFix = " ";
 
-            if(lastCharacter == '.') {
-                postFix = ".";
+            // Handles punctuation and ending characters
+            if(!Character.isLetter(lastCharacter) && !Character.isDefined(lastCharacter)) {
+                postFix = lastCharacter + " ";
                 word = word.substring(0, word.length() -1);
             }
 
