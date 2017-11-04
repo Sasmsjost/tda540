@@ -102,7 +102,7 @@ public class Lab5_skel {
             String postFix = " ";
 
             // Handles punctuation and ending characters
-            if(!Character.isLetter(lastCharacter) && !Character.isDefined(lastCharacter)) {
+            if(!Character.isLetter(lastCharacter) && !Character.isDigit(lastCharacter)) {
                 postFix = lastCharacter + " ";
                 word = word.substring(0, word.length() -1);
             }
