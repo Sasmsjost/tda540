@@ -88,42 +88,56 @@ public class Lab5_skel {
         return false;
     }
 
-    /**
-     * Only supports a single line and will remove excessive whitespace
-     */
     public static String toPigLatin(String text) {
-        StringBuilder pigLatinSentence = new StringBuilder(text.length());
+        StringBuilder pigLatinSentence = new StringBuilder(text.length()*2);
 
-        Scanner textSplitter = new Scanner(text);
-        while(textSplitter.hasNext()) {
-            String word = textSplitter.next();
-            char firstCharacter = word.charAt(0);
-            char lastCharacter = word.charAt(word.length()-1);
-            String postFix = " ";
+        for(int i = 0; i < text.length(); i++) {
+            char character = text.charAt(i);
 
-            // Handles punctuation and ending characters
-            if(!Character.isLetter(lastCharacter) && !Character.isDigit(lastCharacter)) {
-                postFix = lastCharacter + " ";
-                word = word.substring(0, word.length() -1);
-            }
+            if(Character.isLetter(character)) {
+                boolean firstIsVowel = isVowel(character);
 
-            if(isVowel(firstCharacter)) {
-                pigLatinSentence.append(word);
-                pigLatinSentence.append("way");
+                // Increment i until the ending word boundary
+                StringBuilder wordBuilder = new StringBuilder(15);
+                i = getNextWord(text, i, wordBuilder);
+                String word = wordBuilder.toString();
+
+                if(firstIsVowel) {
+                    pigLatinSentence.append(word);
+                    pigLatinSentence.append("way");
+                } else {
+                    String consonants = getFirstConsonants(word);
+                    String rest = word.substring(consonants.length());
+                    String newWord = rest + consonants;
+                    String newWordWithCasing = ensureCasing(newWord, word);
+
+                    pigLatinSentence.append(newWordWithCasing);
+                    pigLatinSentence.append("ay");
+                }
             } else {
-                String consonants = getFirstConsonants(word);
-                String rest = word.substring(consonants.length());
-                String newWord = rest + consonants;
-                String newWordWithCasing = ensureCasing(newWord, word);
-
-                pigLatinSentence.append(newWordWithCasing);
-                pigLatinSentence.append("ay");
+                pigLatinSentence.append(character);
             }
-
-            pigLatinSentence.append(postFix);
         }
 
         return pigLatinSentence.toString();
+    }
+
+    /**
+     * Alternative to scanner which does not throw away whitespace
+     */
+    private static int getNextWord(String text, int i, StringBuilder wordBuilder) {
+        char character = text.charAt(i);
+        while(i+1 < text.length()) {
+            wordBuilder.append(character);
+
+            int nextI = i+1;
+            character = text.charAt(nextI);
+            if(!Character.isLetter(character)) {
+                break;
+            }
+            i = nextI;
+        }
+        return i;
     }
 
     private static String ensureCasing(String newText, String originalText) {
