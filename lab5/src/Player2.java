@@ -1,7 +1,7 @@
 public class Player2 {
     private String name;
     private DiceCup diceCup;
-    private int result;
+    private int accumulatedResult = 0;
 
     public Player2(String playerName, DiceCup diceCup) {
         this.name = playerName;
@@ -13,16 +13,16 @@ public class Player2 {
     }
 
     public int rollDice() {
-        result = diceCup.getSumOfRolls();
-        return result;
+        accumulatedResult += diceCup.rollCup();
+        return accumulatedResult;
     }
 
-    public int getLastRoll() {
-        return result;
+    public int getAccumulatedResult() {
+        return accumulatedResult;
     }
 
     @Override
     public String toString() {
-        return String.format("Player={name=\"%s\", result=%d,\n  diceCup=%s}", name, result, diceCup);
+        return String.format("Player{name=\"%s\", result=%d}", name, accumulatedResult);
     }
 }

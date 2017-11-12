@@ -77,8 +77,8 @@ public class Lab5_skel {
     }
 
     // 3
-    private final static char[] vowels = {'a', 'e', 'i', 'o', 'u', 'y', 'å', 'ä', 'ö'};
     public static boolean isVowel(char ch) {
+        final char[] vowels = {'a', 'e', 'i', 'o', 'u', 'y', 'å', 'ä', 'ö'};
         char normalizedCh = Character.toLowerCase(ch);
         for(char vowel: vowels) {
             if(normalizedCh == vowel) {
@@ -249,25 +249,26 @@ public class Lab5_skel {
     // 10
     public static void findPlayerWithMax() {
         Player2[] players = new Player2[5];
+        DiceCup cup = createDiceCup(5);
 
         for(int i = 0; i < players.length; i++) {
             String name = String.valueOf(i);
-            DiceCup cup = createDiceCup(5);
             Player2 player = new Player2(name, cup);
 
-            players[i] = player;
             player.rollDice();
-            System.out.println(player);
+
+            players[i] = player;
+            System.out.println(String.format("Player %s threw %s", player, cup));
         }
 
         Player2 winningPlayer = players[0];
         for(Player2 player : players) {
-            if(player.getLastRoll() > winningPlayer.getLastRoll()) {
+            if(player.getAccumulatedResult() > winningPlayer.getAccumulatedResult()) {
                 winningPlayer = player;
             }
         }
 
-        String winningMessage = String.format("\n\nWinner: %s", winningPlayer);
+        String winningMessage = String.format("\nWinner: %s", winningPlayer);
         System.out.println(winningMessage);
     }
 }

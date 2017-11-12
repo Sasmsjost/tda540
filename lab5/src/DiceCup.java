@@ -8,7 +8,7 @@ public class DiceCup {
         this.dices = dices;
     }
 
-    public int getSumOfRolls() {
+    public int rollCup() {
         int sum = 0;
         for(Dice dice : dices) {
             sum += dice.roll();
