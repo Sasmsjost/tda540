@@ -14,9 +14,4 @@ public class Player1 {
     public int rollDice() {
         return dice.roll();
     }
-
-
-
 }
-
-

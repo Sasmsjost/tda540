@@ -20,4 +20,3 @@ public class LCRdice {
             return String.format("Dice{result=%s}", result);
         }
 }
-
