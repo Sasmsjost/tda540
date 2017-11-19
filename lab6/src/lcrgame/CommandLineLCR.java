@@ -43,18 +43,20 @@ public class CommandLineLCR {
     }
 
     private static Game buildLCRGame() {
+        int startingBadges = 3;
+
         Dice[] dices = new Dice[3];
         for (int i = 0; i < dices.length; i++) {
             dices[i] = new Dice();
         }
 
         Player[] players = new Player[]{
-                new Player("Pelle", dices),
-                new Player("Olof", dices),
-                new Player("Svenne", dices)
+                new Player("Pelle", startingBadges),
+                new Player("Olof", startingBadges),
+                new Player("Svenne", startingBadges)
         };
 
-        return new Game(players);
+        return new Game(players, dices);
     }
 
     static void render(Game game) {

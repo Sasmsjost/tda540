@@ -1,16 +1,16 @@
 package lcrgame;
 
 public class Game {
-    private static final Player discardPile = null;
-
     private Player[] players;
+    private Dice[] dices;
     private int currentPlayerIndex = 0;
     // If this would be made into an array list of String[], the whole game could be
     // captured and replayed.
     private String[] lastResult = new String[]{};
 
-    public Game(Player[] players){
+    public Game(Player[] players, Dice[] dices){
        this.players = players;
+       this.dices = dices;
     }
 
     // Get the result from the previous round
@@ -46,19 +46,25 @@ public class Game {
 
 
     // Simulate one round and move to the next player.
+    // We ensure that the player will never give away more
+    // badges than they own since we can not roll more
+    // dices than the badge count
     public void step(){
         Player player = getCurrentPlayer();
-        String[] result = player.roll();
+        int rolls = getNumAllowedRolls();
+        String[] result = roll(rolls);
         for (String diceResult : result){
             switch (diceResult) {
                 case "L":
-                    player.giveBadgeTo(getPlayerToTheLeft());
+                    getPlayerToTheLeft().addBadge();
+                    player.removeBadge();
                     break;
                 case "C":
-                    player.giveBadgeTo(discardPile);
+                    player.removeBadge();
                     break;
                 case "R":
-                    player.giveBadgeTo(getPlayerToTheRight());
+                    getPlayerToTheRight().addBadge();
+                    player.removeBadge();
                     break;
                 default:
             }
@@ -67,11 +73,26 @@ public class Game {
         endRound();
     }
 
-    private void endRound() {
-        currentPlayerIndex++;
-        if (currentPlayerIndex >= players.length) {
-            currentPlayerIndex = 0;
+    private int getNumAllowedRolls() {
+        int rolls = getCurrentPlayer().getBadgeCount();
+        int maxRolls = dices.length;
+        if(rolls > maxRolls) {
+            rolls = maxRolls;
         }
+
+        return rolls;
+    }
+
+    private String[] roll(int rolls) {
+        String[] result = new String[rolls];
+        for (int i = 0; i < rolls; i++) {
+            result[i] = dices[i].roll();
+        }
+        return result;
+    }
+
+    private void endRound() {
+        currentPlayerIndex = (currentPlayerIndex+1) % players.length;
 
         // #hasWinner() ensures that there will be at least one player
         // who can play so this will not recurse forever.
