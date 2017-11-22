@@ -51,9 +51,9 @@ public class CommandLineLCR {
         }
 
         Player[] players = new Player[]{
-                new Player("Pelle", startingBadges),
-                new Player("Olof", startingBadges),
-                new Player("Svenne", startingBadges)
+                new Player("Bengt-Arne", startingBadges),
+                new Player("Per-Bengt", startingBadges),
+                new Player("Sibylla", startingBadges)
         };
 
         return new Game(players, dices);

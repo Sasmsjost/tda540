@@ -22,6 +22,10 @@ public class Player {
         badgeCount = count;
     }
 
+    public String getName(){
+        return name;
+    }
+
     public void addBadge() {
         setBadgeCount(badgeCount+1);
     }
