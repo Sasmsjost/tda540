@@ -3,10 +3,7 @@ package towerdefence;
 import towerdefence.go.GameObject;
 import towerdefence.go.Monster;
 import towerdefence.go.Tower;
-import towerdefence.graphics.JMonster;
-import towerdefence.graphics.JTile;
-import towerdefence.graphics.JTower;
-import towerdefence.graphics.Texture;
+import towerdefence.graphics.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,13 +35,12 @@ public class GUITowerDefence extends JFrame {
     static final WorldPosition monsterPosition = new WorldPosition(4, 0);
 
     private JLayeredPane gamePanel;
-//    private final Map<Position, JPanel> positionsPanels = new HashMap<>();
-//    private final MonsterPanel monsterPanel = new MonsterPanel();
     private final Timer timer;
     private static final int FRAME_RATE = 16;
     private static final int PAUSE = 0;
 
     private final Map<GameObject, JTile> gameObjectToTile = new HashMap<>();
+    private final Map<Tower, JBeam> towerToBeam = new HashMap<>();
 
     private World world;
 
@@ -58,18 +54,24 @@ public class GUITowerDefence extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
         this.setResizable(false);
-        this.setSize(Texture.TILE_SIZE*TILE_MAP.length, Texture.TILE_SIZE*TILE_MAP[0].length);
+        this.setSize(Texture.TILE_SIZE * TILE_MAP.length, Texture.TILE_SIZE * TILE_MAP[0].length);
         // Center on screen
         this.setLocationRelativeTo(null);
 
-
         gamePanel = new JLayeredPane();
-        gamePanel.setBounds(0,0, getWidth(), getHeight());
+        gamePanel.setBounds(0, 0, getWidth(), getHeight());
         gamePanel.setLayout(null);
         add(gamePanel, BorderLayout.CENTER);
 
         world = buildTowerDefence();
-        gamePanel.add(getLandscapePanel());
+
+        JPanel tilePanel = getLandscapePanel();
+        gamePanel.add(tilePanel);
+        gamePanel.moveToFront(tilePanel);
+
+        JPanel fxPanel = getFxPanel(world);
+        gamePanel.add(fxPanel);
+        gamePanel.moveToFront(fxPanel);
 
         JPanel goPanel = getGameObjectsPanel(world);
         gamePanel.add(goPanel);
@@ -84,25 +86,65 @@ public class GUITowerDefence extends JFrame {
 
     private void step() {
         world.step();
-        gameObjectToTile.forEach((go, tile)->{
-            tile.setRotation(go.getRotation());
-            tile.setTilePosition(go.getPosition());
-        });
 
-        world.getMonsters().forEach(monster -> {
-            JMonster tile = (JMonster) gameObjectToTile.get(monster);
-            tile.setHelthFraction((float)monster.getHealth() / monster.getMaxHealth());
-        });
-
-        if(world.getMonsters().allMatch(monster->monster.isDead())) {
+        if (world.isGameWon()) {
             System.out.println("You win!");
             System.exit(0);
         }
 
-        if(world.isGameOver()) {
+        if (world.isGameOver()) {
             System.out.println("You lost!");
             System.exit(0);
         }
+
+        render();
+    }
+
+    private void render() {
+        gameObjectToTile.forEach((go, tile) -> {
+            tile.setRotation(go.getRotation());
+            tile.setTilePosition(go.getPosition());
+        });
+
+        towerToBeam.forEach((tower, beam) -> {
+            GameObject target = tower.getLastTarget();
+            if(target == null) {
+                return;
+            }
+
+            WorldPosition pos = tower.getPosition();
+            WorldPosition targetPos = target.getPosition();
+
+            int x = (int) (Math.min(pos.x, targetPos.x)*Texture.TILE_SIZE);
+            int y = (int) (Math.min(pos.y, targetPos.y)*Texture.TILE_SIZE);
+            int x2 = (int) (Math.max(pos.x, targetPos.x)*Texture.TILE_SIZE);
+            int y2 = (int) (Math.max(pos.y, targetPos.y)*Texture.TILE_SIZE);
+
+            WorldPosition relativePos = new WorldPosition(pos.x*Texture.TILE_SIZE-x, pos.y*Texture.TILE_SIZE-y);
+            WorldPosition relativeTargetPos = new WorldPosition(targetPos.x*Texture.TILE_SIZE-x , targetPos.y*Texture.TILE_SIZE-y);
+            relativePos.add(10);
+            relativeTargetPos.add(10);
+
+            x += Texture.TILE_SIZE/2;
+            y += Texture.TILE_SIZE/2;
+            x2 += Texture.TILE_SIZE/2;
+            y2 += Texture.TILE_SIZE/2;
+            int width = x2 - x;
+            int height = y2 - y;
+            beam.setBounds(x-10, y-10, width+20, height+20);
+
+            beam.updateState(
+                    relativePos,
+                    relativeTargetPos,
+                    tower.getLastShot(),
+                    tower.isLastShotHit()
+            );
+        });
+
+        world.getMonsters().forEach(monster -> {
+            JMonster tile = (JMonster) gameObjectToTile.get(monster);
+            tile.setHelthFraction((float) monster.getHealth() / monster.getMaxHealth());
+        });
 
         JTile.allTiles.forEach(JTile::animate);
         getContentPane().repaint();
@@ -116,12 +158,12 @@ public class GUITowerDefence extends JFrame {
     private World buildTowerDefence() {
         World world = new World(TILE_MAP);
 
-        for(WorldPosition position : towerPositions) {
+        for (WorldPosition position : towerPositions) {
             Tower tower = new Tower(position);
             world.add(tower);
         }
 
-        Monster monster = new Monster(monsterPosition, 100);
+        Monster monster = new Monster(monsterPosition, 80);
         world.add(monster);
 
         return world;
@@ -134,17 +176,15 @@ public class GUITowerDefence extends JFrame {
         tiles.setBackground(null);
         tiles.setOpaque(false);
         tiles.setLayout(null);
-        tiles.setBounds(0,0, getWidth(), getHeight());
+        tiles.setBounds(0, 0, getWidth(), getHeight());
 
-        for(GameObject go : world.getGameObjects()) {
+        for (GameObject go : world.getGameObjects()) {
             WorldPosition position = go.getPosition();
             Image[] texture = Texture.get(go.getType());
 
             JTile tile;
-            if(go instanceof Monster) {
+            if (go instanceof Monster) {
                 tile = new JMonster(texture);
-            } else if(go instanceof Tower) {
-                tile = new JTower(texture);
             } else {
                 tile = new JTile(texture);
             }
@@ -157,10 +197,26 @@ public class GUITowerDefence extends JFrame {
         return tiles;
     }
 
+    private JPanel getFxPanel(World world) {
+        JPanel fx = new JPanel();
+        fx.setBackground(null);
+        fx.setOpaque(false);
+        fx.setLayout(null);
+        fx.setBounds(0, 0, getWidth(), getHeight());
+
+        world.getTowers().forEach(tower -> {
+            JBeam beam = new JBeam();
+            fx.add(beam);
+            towerToBeam.put(tower, beam);
+        });
+
+        return fx;
+    }
+
     private JPanel getLandscapePanel() {
         JPanel tiles = new JPanel();
         tiles.setLayout(null);
-        tiles.setBounds(0,0, getWidth(), getHeight());
+        tiles.setBounds(0, 0, getWidth(), getHeight());
 
         int mapSize = TILE_MAP.length;
         for (int y = 0; y < mapSize; y++) {
@@ -169,7 +225,7 @@ public class GUITowerDefence extends JFrame {
                 Image[] icons = Texture.get(tileType);
 
                 JTile tile = new JTile(icons);
-                tile.setTilePosition(x,y);
+                tile.setTilePosition(x, y);
 
                 tiles.add(tile);
             }

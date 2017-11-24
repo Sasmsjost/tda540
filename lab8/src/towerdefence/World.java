@@ -42,6 +42,10 @@ public class World {
                 .map(Tower.class::cast);
     }
 
+    public boolean isGameWon() {
+        return getMonsters().allMatch(Monster::isDead);
+    }
+
     public boolean isGameOver() {
         return getMonsters().anyMatch(Monster::isAtEnd);
     }

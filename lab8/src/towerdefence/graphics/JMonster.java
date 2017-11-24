@@ -18,7 +18,7 @@ public  class JMonster extends JTile {
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        double offset = Math.sin(System.currentTimeMillis() / 200d)*10d;
+        double offset = Math.sin(System.currentTimeMillis() / 200d)*5d;
 
         g2d.translate(0, offset);
         super.paintComponent(g);

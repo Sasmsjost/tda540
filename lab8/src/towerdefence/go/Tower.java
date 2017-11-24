@@ -7,10 +7,13 @@ import java.util.Optional;
 
 public class Tower extends GameObject {
 
+    private GameObject lastTarget;
     private long lastShot;
-    private int shotDelay = 500;
+    private boolean lastShotHit;
+    private int shotDelay = 1500;
     private int damage = 3;
     private float hitChance = 0.5f;
+    private float range = 4;
 
     public Tower(WorldPosition position) {
         super();
@@ -26,26 +29,36 @@ public class Tower extends GameObject {
             }
         });
 
-        return maybeTarget.orElse(null);
+        if(maybeTarget.isPresent()) {
+            Monster monster = maybeTarget.get();
+            if(monster.position.distance(this.position) < 4) {
+                return monster;
+            }
+        }
+        return null;
+
     }
 
     @Override
     public void act(World world) {
-        Monster target = getClosestMonster(world);
-        if(target == null) {
+        Monster monster = getClosestMonster(world);
+        if(monster == null) {
             return;
         }
 
-        turnTo(target);
-        shoot(target);
+        turnTo(monster);
+        shoot(monster);
     }
 
     private void shoot(Monster target) {
         if(System.currentTimeMillis() - lastShot > shotDelay) {
+            lastTarget = target;
             lastShot = System.currentTimeMillis();
             if(Math.random() > hitChance) {
+                lastShotHit = false;
                 return;
             }
+            lastShotHit = true;
 
             target.damage(damage);
         }
@@ -67,5 +80,17 @@ public class Tower extends GameObject {
     @Override
     public int getType() {
         return World.TOWER;
+    }
+
+    public boolean isLastShotHit() {
+        return lastShotHit;
+    }
+
+    public long getLastShot() {
+        return lastShot;
+    }
+
+    public GameObject getLastTarget() {
+        return lastTarget;
     }
 }
