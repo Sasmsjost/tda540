@@ -1,16 +1,18 @@
+package towerdefence;
+
 /**
  * This is a program (file) for *all* tests (testing the model)
  */
 public class Test {
 
   public static void main(String[] args) {
-    System.out.println("Test Start");
+    System.out.println("towerdefence.Test Start");
     // Call test methods here
-    System.out.println("Test Finished");
+    System.out.println("towerdefence.Test Finished");
   }
 
   // Write your test methods here, see PigWTest for example
-  // Test method should end with call to some Helper (below)
+  // towerdefence.Test method should end with call to some Helper (below)
   // i.e. test should pass or exception
 
 
