@@ -35,6 +35,6 @@ public abstract class Position<T extends Number> {
         }
 
         Position<T> other = (Position<T>) obj;
-        return x == other.x && y == other.y;
+        return x.equals(other.x) && y.equals(other.y);
     }
 }
