@@ -1,6 +1,7 @@
 package towerdefence.graphics;
 
 import com.sun.istack.internal.NotNull;
+import towerdefence.World;
 import towerdefence.util.TilePosition;
 import towerdefence.util.WorldPosition;
 
@@ -18,19 +19,20 @@ public  class JTile extends JComponent {
     private int currentFrame = 0;
     private long lastAnimated = 0;
     protected int animationSpeed = 100;
+    protected World world;
 
-    public JTile(@NotNull Image[] texture) {
+    public JTile(@NotNull Image[] texture, World world) {
         super();
         this.texture = texture;
+        this.world = world;
         setTilePosition(0,0);
         allTiles.add(this);
     }
 
-
     public void animate() {
-        if(System.currentTimeMillis() - lastAnimated > animationSpeed) {
+        if (world.now() - lastAnimated > animationSpeed) {
             currentFrame = (currentFrame + 1) % texture.length;
-            lastAnimated = System.currentTimeMillis();
+            lastAnimated = world.now();
         }
     }
 

@@ -1,6 +1,7 @@
 package towerdefence.go;
 
 import towerdefence.World;
+import towerdefence.WorldMap;
 import towerdefence.util.WorldPosition;
 
 import java.util.Optional;
@@ -49,13 +50,13 @@ public class Tower extends GameObject {
         }
 
         turnTo(monster);
-        shoot(monster);
+        shoot(monster, world.now());
     }
 
-    private void shoot(Monster target) {
-        if(System.currentTimeMillis() - lastShot > shotDelay) {
+    private void shoot(Monster target, long now) {
+        if (now - lastShot > shotDelay) {
             lastTarget = target;
-            lastShot = System.currentTimeMillis();
+            lastShot = now;
             if(Math.random() > hitChance) {
                 lastShotHit = false;
                 return;
@@ -81,7 +82,7 @@ public class Tower extends GameObject {
 
     @Override
     public int getType() {
-        return GameObject.TOWER;
+        return WorldMap.TOWER;
     }
 
     public boolean isLastShotHit() {

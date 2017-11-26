@@ -1,38 +1,17 @@
 package towerdefence;
 
-import towerdefence.go.Monster;
-import towerdefence.go.Tower;
-import towerdefence.graphics.Gui;
 import towerdefence.graphics.Texture;
-import towerdefence.util.WorldPosition;
+import towerdefence.levels.Level;
+import towerdefence.levels.Level1;
+import towerdefence.levels.Level2;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class GUITowerDefence extends JFrame {
-    private static final int[][] TILE_MAP = {
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 1, 1, 1, 1, 1, 0},
-            {0, 0, 0, 0, 1, 0, 0, 0, 1, 0},
-            {0, 0, 0, 0, 1, 0, 0, 0, 1, 4},
-            {1, 1, 1, 0, 1, 0, 0, 0, 0, 0},
-            {0, 0, 1, 0, 1, 0, 1, 1, 1, 4},
-            {0, 0, 1, 1, 1, 0, 1, 0, 0, 0},
-            {0, 0, 0, 0, 1, 0, 1, 0, 0, 0},
-            {0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    };
-    private static final WorldPosition[] towerPositions = new WorldPosition[]{
-            new WorldPosition(4, 3),
-            new WorldPosition(2, 5),
-            new WorldPosition(0, 4),
-            new WorldPosition(7, 5)
-    };
-    private static final WorldPosition monsterPosition = new WorldPosition(4, 0);
-
-    private static final int FRAME_RATE = 16;
-    private Gui gui;
-    private World world;
+    private static final Level[] levels = new Level[]{Level1.get(), Level2.get()};
+    private int currentLevel = -1;
+    private Game game;
 
     public static void main(String[] args) {
         Texture.load();
@@ -44,48 +23,78 @@ public class GUITowerDefence extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
         this.setResizable(false);
-        // Ensure that the map fills the screen
-        this.setSize(Texture.TILE_SIZE * TILE_MAP.length, Texture.TILE_SIZE * TILE_MAP[0].length);
-        // Center on screen
-        this.setLocationRelativeTo(null);
 
-        world = buildTowerDefence();
-
-        gui = new Gui(getWidth(), getHeight(), world);
-        add(gui, BorderLayout.CENTER);
-
-        Timer timer = new Timer(FRAME_RATE, e -> step());
-        timer.start();
+        nextLevel();
     }
 
-    private void step() {
-        world.step();
+    private boolean nextLevel() {
+        assert (game == null);
 
-        if (world.isGameWon()) {
-            System.out.println("You win!");
-            System.exit(0);
+        int nextLevelIndex = currentLevel + 1;
+        boolean nextLevelExists = levels.length > nextLevelIndex;
+        if (!nextLevelExists) {
+            return false;
         }
+        currentLevel = nextLevelIndex;
 
-        if (world.isGameOver()) {
-            System.out.println("You lost!");
-            System.exit(0);
-        }
-
-        gui.render();
+        game = new Game(levels[currentLevel]);
+        game.attachTo(this);
+        game.run();
+        game.onWon(this::handleGameWon);
+        game.onLost(this::handleGameLost);
+        return true;
     }
 
-    private World buildTowerDefence() {
-        World world = new World(TILE_MAP);
+    private void lostScene() {
+        JPanel panel = new JPanel();
+        panel.setBounds(0, 0, getWidth(), getHeight());
 
-        for (WorldPosition position : towerPositions) {
-            Tower tower = new Tower(position);
-            world.add(tower);
-        }
+        JLabel label = new JLabel();
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setAlignmentY(Component.CENTER_ALIGNMENT);
 
-        Monster monster = new Monster(monsterPosition, 60);
-        world.add(monster);
+        panel.setBackground(new Color(200, 50, 50));
+        label.setForeground(Color.WHITE);
+        label.setText("You lost...");
+        label.setBounds(0, 0, getWidth(), getHeight());
 
-        return world;
+        panel.add(label);
+        add(panel);
+
+        repaint();
     }
+
+    private void wonScene() {
+        JPanel panel = new JPanel();
+        panel.setBounds(0, 0, getWidth(), getHeight());
+
+        JLabel label = new JLabel();
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+        panel.setBackground(new Color(50, 200, 50));
+        label.setForeground(Color.WHITE);
+        label.setText("You won!!!");
+        label.setBounds(0, 0, getWidth(), getHeight());
+
+        panel.add(label);
+        add(panel);
+
+        repaint();
+    }
+
+    private void handleGameWon() {
+        game.dispose();
+        if (nextLevel()) {
+            return;
+        }
+        wonScene();
+    }
+
+    private void handleGameLost() {
+        game.dispose();
+        lostScene();
+    }
+
 
 }

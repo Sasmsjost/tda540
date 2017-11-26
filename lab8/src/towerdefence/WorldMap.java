@@ -1,0 +1,118 @@
+package towerdefence;
+
+import com.sun.istack.internal.NotNull;
+import towerdefence.util.TilePosition;
+import towerdefence.util.Waypoint;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+public class WorldMap {
+    public static final int GRASS = 0;
+    public static final int ROAD = 1;
+    public static final int TOWER = 2;
+    public static final int MONSTER = 3;
+    public static final int GOAL = 4;
+
+    private int[][] map;
+
+    public WorldMap(@NotNull int[][] map) {
+        this.map = map;
+    }
+
+    public int getWidth() {
+        return this.map[0].length;
+    }
+
+    public int getHeight() {
+        return this.map.length;
+    }
+
+    public int getTypeAt(TilePosition pos) {
+        return getTypeAt(pos.getX(), pos.getY());
+    }
+
+    public int getTypeAt(int x, int y) {
+        // Intentional flip of dimensions
+        return map[y][x];
+    }
+
+    public Stream<TilePosition> getTilePositions() {
+        final int size = getWidth() * getHeight();
+        final int width = getWidth();
+        return Stream.generate(new Supplier<TilePosition>() {
+            private int x = 0;
+            private int y = 0;
+
+            @Override
+            public TilePosition get() {
+                TilePosition pos = new TilePosition(x, y);
+                if (x + 1 >= width) {
+                    x = 0;
+                    y++;
+                } else {
+                    x++;
+                }
+                return pos;
+            }
+        }).limit(size);
+    }
+
+    public TilePosition[] getNeighborsOfType(int type, TilePosition p) {
+        int x = p.getX();
+        int y = p.getY();
+
+        int up = y - 1;
+        int down = y + 1;
+        int left = x - 1;
+        int right = x + 1;
+
+        ArrayList<TilePosition> neightbours = new ArrayList<>();
+
+        if (up > 0 && getTypeAt(x, up) == type) neightbours.add(new TilePosition(x, up));
+        if (left > 0 && getTypeAt(left, y) == type) neightbours.add(new TilePosition(left, y));
+        if (down < getHeight() && getTypeAt(x, down) == type) neightbours.add(new TilePosition(x, down));
+        if (right < getWidth() && getTypeAt(right, y) == type) neightbours.add(new TilePosition(right, y));
+
+        return neightbours.toArray(new TilePosition[]{});
+    }
+
+    public Waypoint generatePathTo(TilePosition start, int targetType) {
+        ArrayList<TilePosition> tilePositions = new ArrayList<>();
+
+        tilePositions.add(start);
+        Waypoint currentWaypoint = new Waypoint(start);
+        currentWaypoint.setPrevious(currentWaypoint);
+        Waypoint firstWaypoint = currentWaypoint;
+
+        TilePosition currentPos = start;
+        while (getTypeAt(currentPos) != targetType) {
+            TilePosition[] goals = getNeighborsOfType(targetType, currentPos);
+            if (goals.length > 0) {
+                currentPos = goals[0];
+            } else {
+                TilePosition[] neighbours = getNeighborsOfType(WorldMap.ROAD, currentPos);
+                TilePosition[] unvisitedNeighbours = Arrays.stream(neighbours)
+                        .filter(n -> !tilePositions.contains(n))
+                        .toArray(TilePosition[]::new);
+
+                if (unvisitedNeighbours.length <= 0) {
+                    throw new RuntimeException("Can not fin end of path");
+                }
+
+                int index = (int) Math.floor((unvisitedNeighbours.length - 1) * Math.random() + 0.5);
+                currentPos = unvisitedNeighbours[index];
+            }
+            tilePositions.add(currentPos);
+
+            Waypoint nextWaypoint = new Waypoint(currentPos);
+            currentWaypoint.setNext(nextWaypoint);
+            nextWaypoint.setPrevious(currentWaypoint);
+            currentWaypoint = nextWaypoint;
+        }
+
+        return firstWaypoint;
+    }
+}

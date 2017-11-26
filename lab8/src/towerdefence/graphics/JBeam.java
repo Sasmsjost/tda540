@@ -1,6 +1,7 @@
 package towerdefence.graphics;
 
 import com.sun.istack.internal.NotNull;
+import towerdefence.World;
 import towerdefence.go.Tower;
 import towerdefence.util.WorldPosition;
 
@@ -11,10 +12,12 @@ import java.awt.geom.Path2D;
 public final class JBeam extends JComponent {
     private Tower tower;
     private int offset;
+    private World world;
     private static final float lifetime = 1000;
 
-    public JBeam(@NotNull Tower tower, int offset) {
+    public JBeam(@NotNull Tower tower, World world, int offset) {
         this.tower = tower;
+        this.world = world;
         this.offset = offset;
     }
 
@@ -36,26 +39,29 @@ public final class JBeam extends JComponent {
         float y = (from.getY() - minY) * Texture.TILE_SIZE + offset;
         float y2 = (to.getY() - minY) * Texture.TILE_SIZE + offset;
 
-        long now = System.currentTimeMillis();
+        // Calculate delta value from shot started with respect to lifetime
+        long now = world.now();
         float delta = 1 - Math.min(now - tower.getLastShot(), lifetime) / lifetime;
         int opacity = (int) (delta * 255);
 
+        // Increase the shot speed with time
         float dx = x2 - x;
         float dy = y2 - y;
         float passed = (float) Math.pow(Math.min((1 - delta) * 2, 1), 4);
         x2 = x + dx * passed;
         y2 = y + dy * passed;
 
-        if (tower.isLastShotHit()) {
+        boolean isHit = tower.isLastShotHit();
+        if (isHit) {
             drawLine(g2d, x, y, x2, y2, delta, new Color(255, 50, 100, opacity));
             drawLine(g2d, x, y, x2, y2, delta, new Color(50, 255, 100, opacity));
             drawLine(g2d, x, y, x2, y2, delta, new Color(100, 120, 255, opacity));
             drawProjectile(g2d, x2, y2, new Color(255, 255, 255, opacity));
         } else {
             float r = (float) Math.random();
-            r = 0.6f+r*0.4f;
-            x2 = x2*r;
-            y2 = y2*r;
+            r = 0.6f + r * 0.4f;
+            x2 = x2 * r;
+            y2 = y2 * r;
             drawLine(g2d, x, y, x2, y2, 0.1f, new Color(50, 50, 50, opacity));
         }
     }

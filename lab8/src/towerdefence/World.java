@@ -3,53 +3,39 @@ package towerdefence;
 import towerdefence.go.GameObject;
 import towerdefence.go.Monster;
 import towerdefence.go.Tower;
-import towerdefence.util.TilePosition;
-import towerdefence.util.Waypoint;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class World {
-    private int[][] map;
+    private WorldMap worldMap;
     private ArrayList<GameObject> gameObjects;
+    private long time = 0;
+    private long delta = 0;
 
-    public World(int[][] map) {
-        this.map = map;
+    public World(WorldMap worldMap) {
+        this.worldMap = worldMap;
         gameObjects = new ArrayList<>();
     }
 
-    public Waypoint getPathFrom(TilePosition start) {
-        return Waypoint.generatePath(start, map);
-    }
-
-    public void step() {
+    public void step(long delta) {
+        assert (delta >= 0);
+        this.delta = delta;
+        time += delta;
         gameObjects.forEach(go -> go.act(this));
     }
 
-    public int getTypeAt(TilePosition pos) {
-        return map[pos.getX()][pos.getY()];
+    public long now() {
+        return time;
+//        return System.currentTimeMillis();
     }
 
+    public long delta() {
+        return delta;
+    }
 
-    public Stream<TilePosition> getTilePositions() {
-        final int size = map.length*map[0].length;
-        final int width = map.length;
-        return Stream.generate(new Supplier<TilePosition>() {
-            private int x = 0;
-            private int y = 0;
-            @Override
-            public TilePosition get() {
-                TilePosition pos = new TilePosition(x, y);
-                if (x + 1 >= width) {
-                    x = 0;
-                    y++;
-                } else {
-                    x++;
-                }
-                return pos;
-            }
-        }).limit(size);
+    public WorldMap getMap() {
+        return worldMap;
     }
 
     public Stream<Monster> getMonsters() {
@@ -73,7 +59,7 @@ public class World {
         return getMonsters().allMatch(Monster::isDead);
     }
 
-    public boolean isGameOver() {
+    public boolean isGameLost() {
         return getMonsters().anyMatch(Monster::isAtEnd);
     }
 

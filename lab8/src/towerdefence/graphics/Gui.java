@@ -89,9 +89,9 @@ public class Gui extends JLayeredPane {
             JTile tile;
             if (go instanceof Monster) {
                 Monster monster = (Monster) go;
-                tile = new JMonster(monster);
+                tile = new JMonster(monster, world);
             } else {
-                tile = new JTile(texture);
+                tile = new JTile(texture, world);
             }
             tile.setTilePosition(position);
             tiles.add(tile);
@@ -110,7 +110,7 @@ public class Gui extends JLayeredPane {
         fx.setBounds(0, 0, getWidth(), getHeight());
 
         world.getTowers().forEach(tower -> {
-            JBeam beam = new JBeam(tower, 20);
+            JBeam beam = new JBeam(tower, world, 20);
             fx.add(beam);
             towerToBeam.put(tower, beam);
         });
@@ -123,11 +123,11 @@ public class Gui extends JLayeredPane {
         tiles.setLayout(null);
         tiles.setBounds(0, 0, getWidth(), getHeight());
 
-        world.getTilePositions().forEach(pos -> {
-            int type = world.getTypeAt(pos);
+        world.getMap().getTilePositions().forEach(pos -> {
+            int type = world.getMap().getTypeAt(pos);
 
             Image[] icons = Texture.get(type);
-            JTile tile = new JTile(icons);
+            JTile tile = new JTile(icons, world);
             tile.setTilePosition(pos);
 
             tiles.add(tile);

@@ -1,6 +1,7 @@
 package towerdefence.go;
 
 import towerdefence.World;
+import towerdefence.WorldMap;
 import towerdefence.util.TilePosition;
 import towerdefence.util.Waypoint;
 import towerdefence.util.WorldPosition;
@@ -8,6 +9,7 @@ import towerdefence.util.WorldPosition;
 public class Monster extends GameObject {
     private int maxHealth;
     private int health;
+    private float speed = 0.001f;
     private Waypoint path;
 
     public Monster(WorldPosition position, int health) {
@@ -19,7 +21,7 @@ public class Monster extends GameObject {
 
     public void damage(int amount) {
         health -= amount;
-        if(health < 0) {
+        if (health < 0) {
             health = 0;
         }
     }
@@ -43,27 +45,27 @@ public class Monster extends GameObject {
     @Override
     public void addToWorld(World world) {
         TilePosition position = new TilePosition(this.position);
-        path = world.getPathFrom(position);
+        path = world.getMap().generatePathTo(position, WorldMap.GOAL);
     }
 
     @Override
     public void act(World world) {
-        if(isAtEnd()) {
+        if (isAtEnd()) {
             return;
         }
-        float speed = 0.01f;
-        this.position.setX(this.position.getX() + path.getDirection().getX() * speed);
-        this.position.setY(this.position.getY() + path.getDirection().getY() * speed);
+        float movement = speed * world.delta();
+        this.position.setX(this.position.getX() + path.getDirection().getX() * movement);
+        this.position.setY(this.position.getY() + path.getDirection().getY() * movement);
 
-        if(path.hasPassedPosition(position)) {
-            position.setX((float)path.getPosition().getX());
-            position.setY((float)path.getPosition().getY());
+        if (path.hasPassedPosition(position)) {
+            position.setX((float) path.getPosition().getX());
+            position.setY((float) path.getPosition().getY());
             path = path.getNext();
         }
     }
 
     @Override
     public int getType() {
-        return GameObject.MONSTER;
+        return WorldMap.MONSTER;
     }
 }

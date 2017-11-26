@@ -1,7 +1,8 @@
 package towerdefence.graphics;
 
 import com.sun.istack.internal.NotNull;
-import towerdefence.go.GameObject;
+import towerdefence.World;
+import towerdefence.WorldMap;
 import towerdefence.go.Monster;
 
 import java.awt.*;
@@ -9,8 +10,8 @@ import java.awt.*;
 public  class JMonster extends JTile {
     private Monster monster;
 
-    public JMonster(@NotNull Monster monster) {
-        super(Texture.get(GameObject.MONSTER));
+    public JMonster(@NotNull Monster monster, World world) {
+        super(Texture.get(WorldMap.MONSTER), world);
         this.monster= monster;
         animationSpeed = 100;
     }
@@ -18,7 +19,7 @@ public  class JMonster extends JTile {
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        double offset = Math.sin(System.currentTimeMillis() / 200d)*5d;
+        double offset = Math.sin(world.now() / 200d) * 5d;
 
         g2d.translate(0, offset);
         super.paintComponent(g);
