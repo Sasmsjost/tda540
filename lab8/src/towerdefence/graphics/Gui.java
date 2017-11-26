@@ -1,9 +1,12 @@
 package towerdefence.graphics;
 
 import towerdefence.World;
+import towerdefence.WorldMap;
 import towerdefence.go.GameObject;
 import towerdefence.go.Monster;
 import towerdefence.go.Tower;
+import towerdefence.util.TilePosition;
+import towerdefence.util.Tuple;
 import towerdefence.util.WorldPosition;
 
 import javax.swing.*;
@@ -123,11 +126,23 @@ public class Gui extends JLayeredPane {
         tiles.setLayout(null);
         tiles.setBounds(0, 0, getWidth(), getHeight());
 
-        world.getMap().getTilePositions().forEach(pos -> {
-            int type = world.getMap().getTypeAt(pos);
+        WorldMap map = world.getMap();
 
-            Image[] icons = Texture.get(type);
-            JTile tile = new JTile(icons, world);
+        world.getMap().getTilePositions().forEach(pos -> {
+            int type = map.getTypeAt(pos);
+
+            JTile tile;
+            if (type == WorldMap.ROAD) {
+                TilePosition[] neightbours = map.getNeighborsOfType(WorldMap.ROAD, pos);
+                Tuple<Integer, Integer> intersection = JRoadTile.getTypeOfRoad(pos, neightbours);
+                int intType = intersection.a;
+                int rotation = intersection.b;
+                tile = new JRoadTile(intType, rotation, world);
+            } else {
+                Image[] icons = Texture.get(type);
+                tile = new JTile(icons, world);
+            }
+
             tile.setTilePosition(pos);
 
             tiles.add(tile);

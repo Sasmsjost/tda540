@@ -1,6 +1,7 @@
 package towerdefence;
 
 import towerdefence.go.GameObject;
+import towerdefence.go.Goal;
 import towerdefence.go.Monster;
 import towerdefence.go.Tower;
 
@@ -27,7 +28,6 @@ public class World {
 
     public long now() {
         return time;
-//        return System.currentTimeMillis();
     }
 
     public long delta() {
@@ -38,29 +38,34 @@ public class World {
         return worldMap;
     }
 
-    public Stream<Monster> getMonsters() {
+    private <T extends GameObject> Stream<T> get(Class<T> type) {
         return gameObjects.stream()
-                .filter(gameObject -> gameObject instanceof Monster)
-                .map(Monster.class::cast);
+                .filter(type::isInstance)
+                .map(go -> (T) go);
     }
 
     public Stream<Tower> getTowers() {
-        return gameObjects.stream()
-                .filter(gameObject -> gameObject instanceof Tower)
-                .map(Tower.class::cast);
+        return get(Tower.class);
+    }
+
+    public Stream<Monster> getMonsters() {
+        return get(Monster.class);
+    }
+
+    public Stream<Goal> getGoal() {
+        return get(Goal.class);
     }
 
     public Stream<GameObject> getGameObjects() {
         return gameObjects.stream();
     }
 
-
     public boolean isGameWon() {
-        return getMonsters().allMatch(Monster::isDead);
+        return this.getMonsters().allMatch(Monster::isDead);
     }
 
     public boolean isGameLost() {
-        return getMonsters().anyMatch(Monster::isAtEnd);
+        return this.getMonsters().anyMatch(Monster::isAtEnd);
     }
 
     public void add(GameObject gameObject) {

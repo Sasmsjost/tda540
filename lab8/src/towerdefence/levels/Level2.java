@@ -14,15 +14,17 @@ public class Level2 {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 4},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     }, new WorldPosition[]{
             new WorldPosition(3, 2),
             new WorldPosition(4, 4),
-            new WorldPosition(6, 2)
+            new WorldPosition(6, 2),
     }, new WorldPosition[]{
             new WorldPosition(0, 3),
+    }, new WorldPosition[]{
+            new WorldPosition(9, 3),
     });
 }

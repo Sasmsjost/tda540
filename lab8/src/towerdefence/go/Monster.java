@@ -44,8 +44,12 @@ public class Monster extends GameObject {
 
     @Override
     public void addToWorld(World world) {
-        TilePosition position = new TilePosition(this.position);
-        path = world.getMap().generatePathTo(position, WorldMap.GOAL);
+        TilePosition start = new TilePosition(this.position);
+        TilePosition[] goals = world.getGoal()
+                .map(GameObject::getPosition)
+                .map(TilePosition::new)
+                .toArray(TilePosition[]::new);
+        path = world.getMap().generatePathTo(start, goals, WorldMap.GOAL);
     }
 
     @Override

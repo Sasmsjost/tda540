@@ -6,11 +6,13 @@ public class Level {
     private int[][] map;
     private WorldPosition[] towers;
     private WorldPosition[] monsters;
+    private WorldPosition[] goals;
 
-    public Level(int[][] map, WorldPosition[] towers, WorldPosition[] monsters) {
+    public Level(int[][] map, WorldPosition[] towers, WorldPosition[] monsters, WorldPosition[] goals) {
         this.map = map;
         this.towers = towers;
         this.monsters = monsters;
+        this.goals = goals;
     }
 
     public int[][] getMap() {
@@ -23,5 +25,9 @@ public class Level {
 
     public WorldPosition[] getMonsters() {
         return monsters;
+    }
+
+    public WorldPosition[] getGoals() {
+        return goals;
     }
 }

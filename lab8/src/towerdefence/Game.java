@@ -1,5 +1,6 @@
 package towerdefence;
 
+import towerdefence.go.Goal;
 import towerdefence.go.Monster;
 import towerdefence.go.Tower;
 import towerdefence.graphics.Gui;
@@ -14,7 +15,7 @@ public class Game {
     private static final int FRAME_RATE = 16;
     private static final int SIMULATION_STEP_SIZE = 16;
     private static final int SIMULATION_RATE = 1;
-    private static final int MONSTER_HEALTH = 1000;
+    private static final int MONSTER_HEALTH = 50;
 
     private Gui gui;
     private World world;
@@ -71,6 +72,12 @@ public class Game {
 
     private World buildWorld(Level level) {
         World world = new World(new WorldMap(level.getMap()));
+
+        for (WorldPosition position : level.getGoals()) {
+            Goal goal = new Goal(position);
+            world.add(goal);
+        }
+
         for (WorldPosition position : level.getTowers()) {
             Tower tower = new Tower(position);
             world.add(tower);

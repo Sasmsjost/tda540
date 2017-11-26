@@ -16,7 +16,7 @@ public final class Level1 {
             {0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 1, 0, 1, 1, 1, 1, 1, 1, 0},
             {0, 1, 0, 1, 0, 0, 0, 0, 1, 0},
-            {0, 1, 0, 1, 0, 0, 4, 0, 1, 0},
+            {0, 1, 0, 1, 0, 0, 1, 0, 1, 0},
             {0, 1, 0, 1, 1, 1, 1, 0, 1, 0},
             {0, 1, 0, 0, 0, 0, 0, 0, 1, 0},
             {0, 1, 1, 1, 1, 1, 1, 1, 1, 0},
@@ -25,8 +25,10 @@ public final class Level1 {
             new WorldPosition(4, 4),
             new WorldPosition(5, 2),
             new WorldPosition(3, 0),
-            new WorldPosition(5, 7)
+            new WorldPosition(5, 7),
     }, new WorldPosition[]{
             new WorldPosition(4, 0),
+    }, new WorldPosition[]{
+            new WorldPosition(6, 5),
     });
 }

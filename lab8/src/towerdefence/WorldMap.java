@@ -18,7 +18,14 @@ public class WorldMap {
 
     private int[][] map;
 
+    /**
+     * @param map An array to use as the map. The map will be transposed
+     *            to allow for nicer array representation in Java.
+     */
     public WorldMap(@NotNull int[][] map) {
+        if (map.length == 0) {
+            throw new IllegalArgumentException("The provided map must be at least a 1x1");
+        }
         this.map = map;
     }
 
@@ -69,17 +76,17 @@ public class WorldMap {
         int left = x - 1;
         int right = x + 1;
 
-        ArrayList<TilePosition> neightbours = new ArrayList<>();
+        ArrayList<TilePosition> neighbours = new ArrayList<>();
 
-        if (up > 0 && getTypeAt(x, up) == type) neightbours.add(new TilePosition(x, up));
-        if (left > 0 && getTypeAt(left, y) == type) neightbours.add(new TilePosition(left, y));
-        if (down < getHeight() && getTypeAt(x, down) == type) neightbours.add(new TilePosition(x, down));
-        if (right < getWidth() && getTypeAt(right, y) == type) neightbours.add(new TilePosition(right, y));
+        if (up >= 0 && getTypeAt(x, up) == type) neighbours.add(new TilePosition(x, up));
+        if (left >= 0 && getTypeAt(left, y) == type) neighbours.add(new TilePosition(left, y));
+        if (down < getHeight() && getTypeAt(x, down) == type) neighbours.add(new TilePosition(x, down));
+        if (right < getWidth() && getTypeAt(right, y) == type) neighbours.add(new TilePosition(right, y));
 
-        return neightbours.toArray(new TilePosition[]{});
+        return neighbours.toArray(new TilePosition[]{});
     }
 
-    public Waypoint generatePathTo(TilePosition start, int targetType) {
+    public Waypoint generatePathTo(TilePosition start, TilePosition[] end, int targetType) {
         ArrayList<TilePosition> tilePositions = new ArrayList<>();
 
         tilePositions.add(start);
@@ -88,31 +95,32 @@ public class WorldMap {
         Waypoint firstWaypoint = currentWaypoint;
 
         TilePosition currentPos = start;
-        while (getTypeAt(currentPos) != targetType) {
-            TilePosition[] goals = getNeighborsOfType(targetType, currentPos);
-            if (goals.length > 0) {
-                currentPos = goals[0];
-            } else {
-                TilePosition[] neighbours = getNeighborsOfType(WorldMap.ROAD, currentPos);
-                TilePosition[] unvisitedNeighbours = Arrays.stream(neighbours)
-                        .filter(n -> !tilePositions.contains(n))
-                        .toArray(TilePosition[]::new);
 
-                if (unvisitedNeighbours.length <= 0) {
-                    throw new RuntimeException("Can not fin end of path");
-                }
+        boolean isAtGoal = false;
+        while (!isAtGoal) {
+            TilePosition[] neighbours = getNeighborsOfType(WorldMap.ROAD, currentPos);
+            TilePosition[] unvisitedNeighbours = Arrays.stream(neighbours)
+                    .filter(n -> !tilePositions.contains(n))
+                    .toArray(TilePosition[]::new);
 
-                int index = (int) Math.floor((unvisitedNeighbours.length - 1) * Math.random() + 0.5);
-                currentPos = unvisitedNeighbours[index];
+            if (unvisitedNeighbours.length <= 0) {
+                throw new RuntimeException("Can not fin end of path");
             }
+
+            int index = (int) Math.floor((unvisitedNeighbours.length - 1) * Math.random() + 0.5);
+            currentPos = unvisitedNeighbours[index];
             tilePositions.add(currentPos);
 
             Waypoint nextWaypoint = new Waypoint(currentPos);
             currentWaypoint.setNext(nextWaypoint);
             nextWaypoint.setPrevious(currentWaypoint);
             currentWaypoint = nextWaypoint;
+
+            final TilePosition maybeGoalPos = currentPos;
+            isAtGoal = Arrays.stream(end).anyMatch(pos -> pos.equals(maybeGoalPos));
         }
 
+        System.out.printf("Path with length %s", firstWaypoint.getLength());
         return firstWaypoint;
     }
 }
