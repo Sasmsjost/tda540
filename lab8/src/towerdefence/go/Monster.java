@@ -64,6 +64,6 @@ public class Monster extends GameObject {
 
     @Override
     public int getType() {
-        return World.MONSTER;
+        return GameObject.MONSTER;
     }
 }

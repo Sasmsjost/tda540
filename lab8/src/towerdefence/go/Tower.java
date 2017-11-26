@@ -79,7 +79,7 @@ public class Tower extends GameObject {
 
     @Override
     public int getType() {
-        return World.TOWER;
+        return GameObject.TOWER;
     }
 
     public boolean isLastShotHit() {

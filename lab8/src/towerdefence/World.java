@@ -8,12 +8,6 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class World {
-    public static int GRASS = 0;
-    public static int ROAD = 1;
-    public static int TOWER = 2;
-    public static int MONSTER = 3;
-    public static int GOAL = 4;
-
     int[][] map;
     private ArrayList<GameObject> gameObjects;
 

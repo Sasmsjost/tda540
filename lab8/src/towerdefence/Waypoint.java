@@ -1,5 +1,7 @@
 package towerdefence;
 
+import towerdefence.go.GameObject;
+
 import java.util.ArrayList;
 
 public class Waypoint {
@@ -58,14 +60,14 @@ public class Waypoint {
         Waypoint firstWaypoint = currentWaypoint;
 
         TilePosition currentPos = start;
-        while(map[currentPos.x][currentPos.y] != World.GOAL) {
+        while(map[currentPos.x][currentPos.y] != GameObject.GOAL) {
             System.out.println(String.format("Checking [%d, %d]", currentPos.x, currentPos.y));
 
-            ArrayList<TilePosition> goals = getNeighborsOfType(World.GOAL, currentPos, map);
+            ArrayList<TilePosition> goals = getNeighborsOfType(GameObject.GOAL, currentPos, map);
             if(goals.size() > 0) {
                 currentPos = goals.get(0);
             } else {
-                ArrayList<TilePosition> neightbours = getNeighborsOfType(World.ROAD, currentPos, map);
+                ArrayList<TilePosition> neightbours = getNeighborsOfType(GameObject.ROAD, currentPos, map);
                 TilePosition[] unvisited = neightbours.stream()
                         .filter(n -> !tilePositions.contains(n))
                         .toArray(TilePosition[]::new);

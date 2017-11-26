@@ -1,6 +1,6 @@
 package towerdefence.graphics;
 
-import towerdefence.World;
+import towerdefence.go.GameObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,11 +17,11 @@ public class Texture {
     private static Map<Integer, Image[]> textures = new HashMap<>();
 
     public static void load() {
-        textures.put(World.GRASS, Texture.loadTexture("grass"));
-        textures.put(World.ROAD, Texture.loadTexture("road"));
-        textures.put(World.TOWER, Texture.loadTexture("tower"));
-        textures.put(World.MONSTER, Texture.loadTexture("monster"));
-        textures.put(World.GOAL, Texture.loadTexture("goal"));
+        textures.put(GameObject.GRASS, Texture.loadTexture("grass"));
+        textures.put(GameObject.ROAD, Texture.loadTexture("road"));
+        textures.put(GameObject.TOWER, Texture.loadTexture("tower"));
+        textures.put(GameObject.MONSTER, Texture.loadTexture("monster"));
+        textures.put(GameObject.GOAL, Texture.loadTexture("goal"));
     }
 
     public static Image[] get(int id) {

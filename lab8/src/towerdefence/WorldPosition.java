@@ -13,4 +13,9 @@ public class WorldPosition extends Position<Float> {
         x += f;
         y += f;
     }
+
+    public void mult(float f) {
+        x *= f;
+        y *= f;
+    }
 }

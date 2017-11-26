@@ -1,18 +1,18 @@
 package towerdefence.graphics;
 
+import com.sun.istack.internal.NotNull;
+import towerdefence.go.GameObject;
+import towerdefence.go.Monster;
+
 import java.awt.*;
 
 public  class JMonster extends JTile {
+    private Monster monster;
 
-    float health = 0;
-
-    public JMonster(Image[] texture) {
-        super(texture);
+    public JMonster(@NotNull Monster monster) {
+        super(Texture.get(GameObject.MONSTER));
+        this.monster= monster;
         animationSpeed = 100;
-    }
-
-    public void setHelthFraction(float health) {
-        this.health = health;
     }
 
     @Override
@@ -28,6 +28,8 @@ public  class JMonster extends JTile {
         int y = getHeight() - 20;
         int width = getWidth() - x*2;
         int height = 5;
+
+        float health = (float)monster.getHealth() / monster.getMaxHealth();
 
         g2d.setColor(Color.WHITE);
         g2d.fillRect(x,y,width, height);

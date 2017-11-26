@@ -108,42 +108,23 @@ public class GUITowerDefence extends JFrame {
 
         towerToBeam.forEach((tower, beam) -> {
             GameObject target = tower.getLastTarget();
-            if(target == null) {
+            if (target == null) {
                 return;
             }
 
             WorldPosition pos = tower.getPosition();
             WorldPosition targetPos = target.getPosition();
 
-            int x = (int) (Math.min(pos.x, targetPos.x)*Texture.TILE_SIZE);
-            int y = (int) (Math.min(pos.y, targetPos.y)*Texture.TILE_SIZE);
-            int x2 = (int) (Math.max(pos.x, targetPos.x)*Texture.TILE_SIZE);
-            int y2 = (int) (Math.max(pos.y, targetPos.y)*Texture.TILE_SIZE);
+            // Find the minimal bounding box for fx
+            int x = (int) ((Math.min(pos.x, targetPos.x) + 0.5) * Texture.TILE_SIZE);
+            int y = (int) ((Math.min(pos.y, targetPos.y) + 0.5) * Texture.TILE_SIZE);
+            int x2 = (int) ((Math.max(pos.x, targetPos.x) + 0.5) * Texture.TILE_SIZE);
+            int y2 = (int) ((Math.max(pos.y, targetPos.y) + 0.5) * Texture.TILE_SIZE);
 
-            WorldPosition relativePos = new WorldPosition(pos.x*Texture.TILE_SIZE-x, pos.y*Texture.TILE_SIZE-y);
-            WorldPosition relativeTargetPos = new WorldPosition(targetPos.x*Texture.TILE_SIZE-x , targetPos.y*Texture.TILE_SIZE-y);
-            relativePos.add(10);
-            relativeTargetPos.add(10);
-
-            x += Texture.TILE_SIZE/2;
-            y += Texture.TILE_SIZE/2;
-            x2 += Texture.TILE_SIZE/2;
-            y2 += Texture.TILE_SIZE/2;
+            int offset = beam.getOffset();
             int width = x2 - x;
             int height = y2 - y;
-            beam.setBounds(x-10, y-10, width+20, height+20);
-
-            beam.updateState(
-                    relativePos,
-                    relativeTargetPos,
-                    tower.getLastShot(),
-                    tower.isLastShotHit()
-            );
-        });
-
-        world.getMonsters().forEach(monster -> {
-            JMonster tile = (JMonster) gameObjectToTile.get(monster);
-            tile.setHelthFraction((float) monster.getHealth() / monster.getMaxHealth());
+            beam.setBounds(x - offset, y - offset, width + offset*2, height + offset*2);
         });
 
         JTile.allTiles.forEach(JTile::animate);
@@ -163,7 +144,7 @@ public class GUITowerDefence extends JFrame {
             world.add(tower);
         }
 
-        Monster monster = new Monster(monsterPosition, 80);
+        Monster monster = new Monster(monsterPosition, 60);
         world.add(monster);
 
         return world;
@@ -184,7 +165,8 @@ public class GUITowerDefence extends JFrame {
 
             JTile tile;
             if (go instanceof Monster) {
-                tile = new JMonster(texture);
+                Monster monster = (Monster) go;
+                tile = new JMonster(monster);
             } else {
                 tile = new JTile(texture);
             }
@@ -205,7 +187,7 @@ public class GUITowerDefence extends JFrame {
         fx.setBounds(0, 0, getWidth(), getHeight());
 
         world.getTowers().forEach(tower -> {
-            JBeam beam = new JBeam();
+            JBeam beam = new JBeam(tower, 20);
             fx.add(beam);
             towerToBeam.put(tower, beam);
         });
