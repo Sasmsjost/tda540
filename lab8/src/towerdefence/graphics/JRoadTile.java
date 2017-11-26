@@ -25,13 +25,17 @@ public class JRoadTile extends JTile {
     }
 
     private static Image[] getTexture(int type) {
-        assert (type >= 0 && type <= 4);
+        if (type < 0 || type > 4) {
+            throw new IllegalArgumentException("Only types in JRoadTile can be used");
+        }
         Image[] texture = Texture.get(WorldMap.ROAD);
         return new Image[]{texture[type]};
     }
 
     public static Tuple<Integer, Integer> getTypeOfRoad(TilePosition pos, TilePosition[] neighbours) {
-        if (neighbours.length == 1) {
+        if (neighbours.length == 0) {
+            return new Tuple<>(ALONE, 0);
+        } else if (neighbours.length == 1) {
             return new Tuple<>(END, getEndRotation(pos, neighbours));
         } else if (neighbours.length == 2) {
             boolean xStraight = neighbours[0].getX().equals(neighbours[1].getX());

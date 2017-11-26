@@ -28,7 +28,9 @@ public class GUITowerDefence extends JFrame {
     }
 
     private boolean nextLevel() {
-        assert (game == null);
+        if (game != null) {
+            throw new IllegalStateException("The previous game must be disposed before a new one can be started");
+        }
 
         int nextLevelIndex = currentLevel + 1;
         boolean nextLevelExists = levels.length > nextLevelIndex;
@@ -85,6 +87,7 @@ public class GUITowerDefence extends JFrame {
 
     private void handleGameWon() {
         game.dispose();
+        game = null;
         if (nextLevel()) {
             return;
         }

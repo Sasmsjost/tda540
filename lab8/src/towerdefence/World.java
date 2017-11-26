@@ -20,7 +20,9 @@ public class World {
     }
 
     public void step(long delta) {
-        assert (delta >= 0);
+        if (delta < 0) {
+            throw new IllegalArgumentException("Delta must be more than 0");
+        }
         this.delta = delta;
         time += delta;
         gameObjects.forEach(go -> go.act(this));
