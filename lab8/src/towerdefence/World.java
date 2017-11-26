@@ -5,73 +5,28 @@ import towerdefence.go.Goal;
 import towerdefence.go.Monster;
 import towerdefence.go.Tower;
 
-import java.util.ArrayList;
 import java.util.stream.Stream;
 
-public class World {
-    private WorldMap worldMap;
-    private ArrayList<GameObject> gameObjects;
-    private long time = 0;
-    private long delta = 0;
+public interface World {
+    void step(long delta);
 
-    public World(WorldMap worldMap) {
-        this.worldMap = worldMap;
-        gameObjects = new ArrayList<>();
-    }
+    long now();
 
-    public void step(long delta) {
-        if (delta < 0) {
-            throw new IllegalArgumentException("Delta must be more than 0");
-        }
-        this.delta = delta;
-        time += delta;
-        gameObjects.forEach(go -> go.act(this));
-    }
+    long delta();
 
-    public long now() {
-        return time;
-    }
+    WorldMap getMap();
 
-    public long delta() {
-        return delta;
-    }
+    Stream<Tower> getTowers();
 
-    public WorldMap getMap() {
-        return worldMap;
-    }
+    Stream<Monster> getMonsters();
 
-    private <T extends GameObject> Stream<T> get(Class<T> type) {
-        return gameObjects.stream()
-                .filter(type::isInstance)
-                .map(go -> (T) go);
-    }
+    Stream<Goal> getGoal();
 
-    public Stream<Tower> getTowers() {
-        return get(Tower.class);
-    }
+    Stream<GameObject> getGameObjects();
 
-    public Stream<Monster> getMonsters() {
-        return get(Monster.class);
-    }
+    boolean isGameWon();
 
-    public Stream<Goal> getGoal() {
-        return get(Goal.class);
-    }
+    boolean isGameLost();
 
-    public Stream<GameObject> getGameObjects() {
-        return gameObjects.stream();
-    }
-
-    public boolean isGameWon() {
-        return this.getMonsters().allMatch(Monster::isDead);
-    }
-
-    public boolean isGameLost() {
-        return this.getMonsters().anyMatch(Monster::isAtEnd);
-    }
-
-    public void add(GameObject gameObject) {
-        gameObject.addToWorld(this);
-        gameObjects.add(gameObject);
-    }
+    void add(GameObject gameObject);
 }

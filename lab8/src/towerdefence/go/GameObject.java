@@ -3,24 +3,15 @@ package towerdefence.go;
 import towerdefence.World;
 import towerdefence.util.WorldPosition;
 
-public abstract class GameObject {
+public interface GameObject {
 
+    float getRotation();
 
-    protected WorldPosition position = new WorldPosition(0f,0f);
-    protected float rotation = 0;
+    WorldPosition getPosition();
 
-    public GameObject() { }
+    void act(World world);
 
-    public float getRotation(){
-        return rotation;
-    }
+    int getType();
 
-    public WorldPosition getPosition(){
-        return position;
-    }
-
-    public abstract void act(World world);
-    public abstract int getType();
-
-    public void addToWorld(World world) { }
+    void addToWorld(World world);
 }

@@ -1,8 +1,6 @@
 package towerdefence;
 
-import towerdefence.go.Goal;
-import towerdefence.go.Monster;
-import towerdefence.go.Tower;
+import towerdefence.go.*;
 import towerdefence.graphics.Gui;
 import towerdefence.graphics.Texture;
 import towerdefence.levels.Level;
@@ -75,20 +73,20 @@ public class Game {
     }
 
     private World buildWorld(Level level) {
-        World world = new World(new WorldMap(level.getMap()));
+        World world = new RikardsWorld(new RikardsWorldMap(level.getMap()));
 
         for (WorldPosition position : level.getGoals()) {
-            Goal goal = new Goal(position);
+            Goal goal = new PrincessGoal(position);
             world.add(goal);
         }
 
         for (WorldPosition position : level.getTowers()) {
-            Tower tower = new Tower(position);
+            Tower tower = new BeamTower(position);
             world.add(tower);
         }
 
         for (WorldPosition position : level.getMonsters()) {
-            Monster monster = new Monster(position, MONSTER_HEALTH);
+            Monster monster = new BombMonster(position, MONSTER_HEALTH);
             world.add(monster);
         }
 
