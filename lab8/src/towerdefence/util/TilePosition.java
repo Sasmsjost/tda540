@@ -1,4 +1,4 @@
-package towerdefence;
+package towerdefence.util;
 
 public class TilePosition extends Position<Integer> {
     public TilePosition(int x, int y) {

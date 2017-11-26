@@ -1,17 +1,17 @@
 package towerdefence.graphics;
 
 import com.sun.istack.internal.NotNull;
-import towerdefence.WorldPosition;
 import towerdefence.go.Tower;
+import towerdefence.util.WorldPosition;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Path2D;
 
-public class JBeam extends JComponent {
+public final class JBeam extends JComponent {
     private Tower tower;
     private int offset;
-    private float lifetime = 1000;
+    private static final float lifetime = 1000;
 
     public JBeam(@NotNull Tower tower, int offset) {
         this.tower = tower;
@@ -31,37 +31,50 @@ public class JBeam extends JComponent {
         // Transform from global to local coordinates
         float minX = (Math.min(to.getX(), from.getX()));
         float minY = (Math.min(to.getY(), from.getY()));
-        float x = (from.getX()-minX) * Texture.TILE_SIZE + offset;
-        float x2 = (to.getX()-minX) * Texture.TILE_SIZE + offset;
-        float y = (from.getY()-minY) * Texture.TILE_SIZE + offset;
-        float y2 = (to.getY()-minY) * Texture.TILE_SIZE + offset;
+        float x = (from.getX() - minX) * Texture.TILE_SIZE + offset;
+        float x2 = (to.getX() - minX) * Texture.TILE_SIZE + offset;
+        float y = (from.getY() - minY) * Texture.TILE_SIZE + offset;
+        float y2 = (to.getY() - minY) * Texture.TILE_SIZE + offset;
 
         long now = System.currentTimeMillis();
         float delta = 1 - Math.min(now - tower.getLastShot(), lifetime) / lifetime;
         int opacity = (int) (delta * 255);
 
+        float dx = x2 - x;
+        float dy = y2 - y;
+        float passed = (float) Math.pow(Math.min((1 - delta) * 2, 1), 4);
+        x2 = x + dx * passed;
+        y2 = y + dy * passed;
+
         if (tower.isLastShotHit()) {
-            delta /= 4;
             drawLine(g2d, x, y, x2, y2, delta, new Color(255, 50, 100, opacity));
             drawLine(g2d, x, y, x2, y2, delta, new Color(50, 255, 100, opacity));
             drawLine(g2d, x, y, x2, y2, delta, new Color(100, 120, 255, opacity));
+            drawProjectile(g2d, x2, y2, new Color(255, 255, 255, opacity));
         } else {
-            drawLine(g2d, x, y, (float) (Math.random() * x2), (float) (Math.random() * y2), 1f, new Color(50, 50, 50, opacity));
+            float r = (float) Math.random();
+            r = 0.6f+r*0.4f;
+            x2 = x2*r;
+            y2 = y2*r;
+            drawLine(g2d, x, y, x2, y2, 0.1f, new Color(50, 50, 50, opacity));
         }
+    }
+
+    private void drawProjectile(Graphics2D g2d, float x, float y, Color color) {
+        int size = 20;
+        g2d.setColor(color);
+        g2d.fillOval((int) x - size / 2, (int) y - size / 2, size, size);
     }
 
     private void drawLine(Graphics2D g2d, float x, float y, float x2, float y2, float delta, Color color) {
         g2d.setColor(color);
 
-        // 0->1 >> 0.5->1.5
-        delta = (delta + 0.5f);
-
-        float cx = (float) (Math.random() * delta) * getWidth();
-        float cy = (float) (Math.random() * delta) * getHeight();
+        float cx = (float) ((Math.random() - 0.5) * delta) * getWidth();
+        float cy = (float) ((Math.random() - 0.5) * delta) * getHeight();
 
         Path2D.Float path = new Path2D.Float();
         path.moveTo(x, y);
-        path.curveTo(x, y, cx, cy, x2, y2);
+        path.curveTo(x, y, x + cx, y + cy, x2, y2);
         g2d.setStroke(new BasicStroke(5));
         g2d.draw(path);
     }

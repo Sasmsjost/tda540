@@ -1,7 +1,8 @@
 package towerdefence.graphics;
 
 import com.sun.istack.internal.NotNull;
-import towerdefence.WorldPosition;
+import towerdefence.util.TilePosition;
+import towerdefence.util.WorldPosition;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,19 +26,32 @@ public  class JTile extends JComponent {
         allTiles.add(this);
     }
 
-    public void setRotation(float rotation) {
-        this.rotation = rotation;
-    }
-
-    public float getRotation() {
-        return rotation;
-    }
 
     public void animate() {
         if(System.currentTimeMillis() - lastAnimated > animationSpeed) {
             currentFrame = (currentFrame + 1) % texture.length;
             lastAnimated = System.currentTimeMillis();
         }
+    }
+
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
+    }
+
+    public void setTilePosition(WorldPosition pos) {
+        setTilePosition(pos.getX(), pos.getY());
+    }
+
+    public void setTilePosition(TilePosition pos) {
+        setTilePosition(pos.getX(), pos.getY());
+    }
+
+
+    private void setTilePosition(float x, float y) {
+        int size = Texture.TILE_SIZE;
+        int ix = Math.round(x*size);
+        int iy = Math.round(y*size);
+        setBounds(ix,iy,size, size);
     }
 
     @Override
@@ -48,17 +62,4 @@ public  class JTile extends JComponent {
         g2d.rotate(rotation, getWidth() / 2, getHeight() / 2);
         g2d.drawImage(texture[currentFrame], 0, 0, null);
     }
-
-    public void setTilePosition(WorldPosition pos) {
-        setTilePosition(pos.getX(), pos.getY());
-    }
-
-    public void setTilePosition(float x, float y) {
-        int size = Texture.TILE_SIZE;
-        int ix = Math.round(x*size);
-        int iy = Math.round(y*size);
-        setBounds(ix,iy,size, size);
-    }
-
-
 }

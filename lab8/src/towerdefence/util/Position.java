@@ -1,4 +1,4 @@
-package towerdefence;
+package towerdefence.util;
 
 public abstract class Position<T extends Number> {
     T x;

@@ -1,7 +1,7 @@
 package towerdefence.go;
 
 import towerdefence.World;
-import towerdefence.WorldPosition;
+import towerdefence.util.WorldPosition;
 
 public abstract class GameObject {
     public static final int GRASS = 0;

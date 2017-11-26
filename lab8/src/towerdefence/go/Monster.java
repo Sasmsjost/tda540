@@ -1,9 +1,9 @@
 package towerdefence.go;
 
-import towerdefence.TilePosition;
-import towerdefence.Waypoint;
 import towerdefence.World;
-import towerdefence.WorldPosition;
+import towerdefence.util.TilePosition;
+import towerdefence.util.Waypoint;
+import towerdefence.util.WorldPosition;
 
 public class Monster extends GameObject {
     private int maxHealth;

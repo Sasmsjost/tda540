@@ -1,4 +1,4 @@
-package towerdefence;
+package towerdefence.util;
 
 import towerdefence.go.GameObject;
 

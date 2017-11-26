@@ -1,7 +1,7 @@
 package towerdefence.go;
 
 import towerdefence.World;
-import towerdefence.WorldPosition;
+import towerdefence.util.WorldPosition;
 
 import java.util.Optional;
 
@@ -21,6 +21,7 @@ public class Tower extends GameObject {
     }
 
     private Monster getClosestMonster(World world) {
+        // Get closest monster
         Optional<Monster> maybeTarget = world.getMonsters().reduce((monster, closest) -> {
             if(monster.position.distance(this.position) < closest.position.distance(this.position)) {
                 return monster;
@@ -31,7 +32,8 @@ public class Tower extends GameObject {
 
         if(maybeTarget.isPresent()) {
             Monster monster = maybeTarget.get();
-            if(monster.position.distance(this.position) < 4) {
+            // Ensure monster within radius
+            if(monster.position.distance(this.position) < range) {
                 return monster;
             }
         }
