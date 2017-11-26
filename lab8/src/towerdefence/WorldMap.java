@@ -120,7 +120,6 @@ public class WorldMap {
             isAtGoal = Arrays.stream(end).anyMatch(pos -> pos.equals(maybeGoalPos));
         }
 
-        System.out.printf("Path with length %s", firstWaypoint.getLength());
         return firstWaypoint;
     }
 }

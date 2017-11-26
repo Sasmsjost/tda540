@@ -12,9 +12,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Game {
+    // The rate which the game is redrawn
     private static final int FRAME_RATE = 16;
-    private static final int SIMULATION_STEP_SIZE = 16;
-    private static final int SIMULATION_RATE = 1;
+    // The step size on a simulation, lower values means more CPU usage
+    private static final int SIMULATION_STEP_SIZE = 2;
+    // How many simulations we run per frame
+    private static final int SIMULATION_RATE = 8;
+    // The maximum heath of a monster
     private static final int MONSTER_HEALTH = 50;
 
     private Gui gui;
