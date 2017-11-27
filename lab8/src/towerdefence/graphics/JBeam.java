@@ -1,6 +1,5 @@
 package towerdefence.graphics;
 
-import com.sun.istack.internal.NotNull;
 import towerdefence.World;
 import towerdefence.go.Tower;
 import towerdefence.util.WorldPosition;
@@ -15,7 +14,7 @@ public final class JBeam extends JComponent {
     private World world;
     private static final float lifetime = 1000;
 
-    public JBeam(@NotNull Tower tower, World world, int offset) {
+    public JBeam(Tower tower, World world, int offset) {
         this.tower = tower;
         this.world = world;
         this.offset = offset;

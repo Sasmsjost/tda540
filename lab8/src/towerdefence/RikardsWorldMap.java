@@ -1,6 +1,5 @@
 package towerdefence;
 
-import com.sun.istack.internal.NotNull;
 import towerdefence.util.TilePosition;
 import towerdefence.util.Waypoint;
 
@@ -16,7 +15,7 @@ public class RikardsWorldMap implements WorldMap {
      * @param map An array to use as the map. The map will be transposed
      *            to allow for nicer array representation in Java.
      */
-    public RikardsWorldMap(@NotNull int[][] map) {
+    public RikardsWorldMap(int[][] map) {
         if (map.length == 0) {
             throw new IllegalArgumentException("The provided map must be at least a 1x1");
         }

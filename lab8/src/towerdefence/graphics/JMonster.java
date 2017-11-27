@@ -1,6 +1,5 @@
 package towerdefence.graphics;
 
-import com.sun.istack.internal.NotNull;
 import towerdefence.World;
 import towerdefence.WorldMap;
 import towerdefence.go.Monster;
@@ -10,7 +9,7 @@ import java.awt.*;
 public  class JMonster extends JTile {
     private Monster monster;
 
-    public JMonster(@NotNull Monster monster, World world) {
+    public JMonster(Monster monster, World world) {
         super(Texture.get(WorldMap.MONSTER), world);
         this.monster= monster;
         animationSpeed = 100;
