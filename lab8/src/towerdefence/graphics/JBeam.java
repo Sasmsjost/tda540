@@ -83,7 +83,7 @@ public final class JBeam extends JComponent {
         g2d.draw(path);
     }
 
-    public int getOffset() {
+    public int getRenderPadding() {
         return offset;
     }
 }

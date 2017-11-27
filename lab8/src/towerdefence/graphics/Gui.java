@@ -39,24 +39,24 @@ public class Gui extends JLayeredPane {
 
             WorldPosition pos = tower.getPosition();
             WorldPosition targetPos = target.getPosition();
-            int offset = beam.getOffset();
-            beam.setBounds(getBoundingBox(pos, targetPos, offset));
+            int padding = beam.getRenderPadding();
+            beam.setBounds(getScreenBoundingBox(pos, targetPos, padding));
         });
 
         JTile.allTiles.forEach(JTile::animate);
         repaint();
     }
 
-    private Rectangle getBoundingBox(WorldPosition pos, WorldPosition targetPos, int offset) {
+    private Rectangle getScreenBoundingBox(WorldPosition pos1, WorldPosition pos2, int padding) {
         // Find the minimal bounding box for fx
-        int x = (int) ((Math.min(pos.getX(), targetPos.getX()) + 0.5) * Texture.TILE_SIZE);
-        int y = (int) ((Math.min(pos.getY(), targetPos.getY()) + 0.5) * Texture.TILE_SIZE);
-        int x2 = (int) ((Math.max(pos.getX(), targetPos.getX()) + 0.5) * Texture.TILE_SIZE);
-        int y2 = (int) ((Math.max(pos.getY(), targetPos.getY()) + 0.5) * Texture.TILE_SIZE);
+        int x = (int) ((Math.min(pos1.getX(), pos2.getX()) + 0.5) * Texture.TILE_SIZE);
+        int y = (int) ((Math.min(pos1.getY(), pos2.getY()) + 0.5) * Texture.TILE_SIZE);
+        int x2 = (int) ((Math.max(pos1.getX(), pos2.getX()) + 0.5) * Texture.TILE_SIZE);
+        int y2 = (int) ((Math.max(pos1.getY(), pos2.getY()) + 0.5) * Texture.TILE_SIZE);
         int width = x2 - x;
         int height = y2 - y;
 
-        return new Rectangle(x - offset, y - offset, width + offset * 2, height + offset * 2);
+        return new Rectangle(x - padding, y - padding, width + padding * 2, height + padding * 2);
     }
 
     private void addTilePanel(World world) {
