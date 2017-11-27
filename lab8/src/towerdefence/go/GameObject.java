@@ -5,8 +5,6 @@ import towerdefence.util.WorldPosition;
 
 public interface GameObject {
 
-    float getRotation();
-
     WorldPosition getPosition();
 
     void act(World world);

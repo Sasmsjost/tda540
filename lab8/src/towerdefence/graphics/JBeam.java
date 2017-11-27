@@ -57,11 +57,10 @@ public final class JBeam extends JComponent {
             drawLine(g2d, x, y, x2, y2, delta, new Color(100, 120, 255, opacity));
             drawProjectile(g2d, x2, y2, new Color(255, 255, 255, opacity));
         } else {
-            float r = (float) Math.random();
-            r = 0.6f + r * 0.4f;
-            x2 = x2 * r;
-            y2 = y2 * r;
-            drawLine(g2d, x, y, x2, y2, 0.1f, new Color(50, 50, 50, opacity));
+            drawLine(g2d, x, y, x, y, delta, new Color(0, 50, 60, opacity));
+            drawLine(g2d, x, y, x, y, delta, new Color(50, 0, 60, opacity));
+            drawLine(g2d, x, y, x, y, delta, new Color(30, 40, 0, opacity));
+            drawProjectile(g2d, x, y, new Color(0, 0, 0, opacity));
         }
     }
 

@@ -8,11 +8,11 @@ import towerdefence.util.Tuple;
 import java.awt.*;
 
 public class JRoadTile extends JTile {
-    public static final int STRAIGHT = 0;
-    public static final int CORNER = 1;
-    public static final int TINTERSECTION = 2;
-    public static final int END = 3;
-    public static final int ALONE = 4;
+    private static final int STRAIGHT = 0;
+    private static final int CORNER = 1;
+    private static final int TINTERSECTION = 2;
+    private static final int END = 3;
+    private static final int ALONE = 4;
 
     /**
      * @param type     The type of tile, ex. corner, straight, etc. Found in JRoadTile.CORNER
@@ -24,6 +24,15 @@ public class JRoadTile extends JTile {
         setRotation((float) (rotation * Math.PI / 2f));
     }
 
+    public static JRoadTile fromPosition(TilePosition pos, World world) {
+        TilePosition[] neightbours = world.getMap().getNeighborsOfType(WorldMap.ROAD, pos);
+        Tuple<Integer, Integer> intersection = JRoadTile.getTypeOfRoad(pos, neightbours);
+        int intType = intersection.a;
+        int rotation = intersection.b;
+        return new JRoadTile(intType, rotation, world);
+
+    }
+
     private static Image[] getTexture(int type) {
         if (type < 0 || type > 4) {
             throw new IllegalArgumentException("Only types in JRoadTile can be used");
@@ -32,7 +41,7 @@ public class JRoadTile extends JTile {
         return new Image[]{texture[type]};
     }
 
-    public static Tuple<Integer, Integer> getTypeOfRoad(TilePosition pos, TilePosition[] neighbours) {
+    private static Tuple<Integer, Integer> getTypeOfRoad(TilePosition pos, TilePosition[] neighbours) {
         if (neighbours.length == 0) {
             return new Tuple<>(ALONE, 0);
         } else if (neighbours.length == 1) {
@@ -78,9 +87,17 @@ public class JRoadTile extends JTile {
         int px = pos.getX();
 
         if (nx == px) {
-            return 0;
+            if (Math.random() < 0.5) {
+                return 0;
+            } else {
+                return 2;
+            }
         } else {
-            return 1;
+            if (Math.random() < 0.5) {
+                return 1;
+            } else {
+                return 3;
+            }
         }
     }
 

@@ -6,17 +6,17 @@ import towerdefence.util.WorldPosition;
 
 import java.util.Optional;
 
-public class BeamTower extends RikardsGameObject implements Tower {
+public class RikardsTower extends RikardsGameObject implements Tower {
 
     private GameObject lastTarget;
     private long lastShot;
     private boolean lastShotHit;
-    private int shotDelay = 1500;
+    private int shotDelay = 1000;
     private int damage = 3;
     private float hitChance = 0.5f;
     private float range = 4;
 
-    public BeamTower(WorldPosition position) {
+    public RikardsTower(WorldPosition position) {
         super();
         this.position = position;
     }
@@ -46,38 +46,25 @@ public class BeamTower extends RikardsGameObject implements Tower {
     public void act(World world) {
         Monster monster = getClosestMonster(world);
         if (monster == null) {
+            lastTarget = null;
             return;
         }
 
-        turnTo(monster);
         shoot(monster, world.now());
     }
 
     private void shoot(Monster target, long now) {
         if (now - lastShot > shotDelay) {
-            lastTarget = target;
             lastShot = now;
-            if (Math.random() > hitChance) {
+            lastTarget = target;
+            if (Math.random() < hitChance) {
                 lastShotHit = false;
-                return;
+            } else {
+                lastShotHit = true;
+                target.damage(damage);
             }
-            lastShotHit = true;
-
-            target.damage(damage);
         }
 
-    }
-
-    private void turnTo(Monster target) {
-        float dx = position.getX() - target.getPosition().getX();
-        float dy = position.getY() - target.getPosition().getY();
-
-        float angle = (float) Math.atan(dy / dx) + (float) Math.PI / 2;
-        if (dx >= 0) {
-            angle = angle + (float) Math.PI;
-        }
-
-        rotation = angle;
     }
 
     @Override

@@ -6,13 +6,13 @@ import towerdefence.util.TilePosition;
 import towerdefence.util.Waypoint;
 import towerdefence.util.WorldPosition;
 
-public class BombMonster extends RikardsGameObject implements Monster {
+public class RikardsMonster extends RikardsGameObject implements Monster {
     private int maxHealth;
     private int health;
     private float speed = 0.001f;
     private Waypoint path;
 
-    public BombMonster(WorldPosition position, int health) {
+    public RikardsMonster(WorldPosition position, int health) {
         super();
         this.maxHealth = health;
         this.health = health;

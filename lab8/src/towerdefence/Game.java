@@ -76,17 +76,17 @@ public class Game {
         World world = new RikardsWorld(new RikardsWorldMap(level.getMap()));
 
         for (WorldPosition position : level.getGoals()) {
-            Goal goal = new PrincessGoal(position);
+            Goal goal = new RikardsGoal(position);
             world.add(goal);
         }
 
         for (WorldPosition position : level.getTowers()) {
-            Tower tower = new BeamTower(position);
+            Tower tower = new RikardsTower(position);
             world.add(tower);
         }
 
         for (WorldPosition position : level.getMonsters()) {
-            Monster monster = new BombMonster(position, MONSTER_HEALTH);
+            Monster monster = new RikardsMonster(position, MONSTER_HEALTH);
             world.add(monster);
         }
 

@@ -3,9 +3,9 @@ package towerdefence.go;
 import towerdefence.WorldMap;
 import towerdefence.util.WorldPosition;
 
-public class PrincessGoal extends RikardsGameObject implements Goal {
+public class RikardsGoal extends RikardsGameObject implements Goal {
 
-    public PrincessGoal(WorldPosition position) {
+    public RikardsGoal(WorldPosition position) {
         super();
         this.position = position;
     }
