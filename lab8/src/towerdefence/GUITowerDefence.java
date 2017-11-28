@@ -1,17 +1,30 @@
 package towerdefence;
 
+import towerdefence.go.*;
+import towerdefence.graphics.Gui;
 import towerdefence.graphics.Texture;
 import towerdefence.levels.Level;
 import towerdefence.levels.Level1;
-import towerdefence.levels.Level2;
+import towerdefence.util.WorldPosition;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class GUITowerDefence extends JFrame {
-    private static final Level[] levels = new Level[]{Level1.get(), Level2.get()};
-    private int currentLevel = -1;
-    private Game game;
+    // The rate which the game is redrawn
+    private static final int FRAME_RATE = 16;
+    // The step size on a simulation, lower values means more CPU usage
+    private static final int SIMULATION_STEP_SIZE = 2;
+    // How many simulations we run per frame
+    private static final int SIMULATION_RATE = 8;
+    // The maximum heath of a monster
+    private static final int MONSTER_HEALTH = 50;
+
+    private Gui gui;
+    private World world;
+    private Timer timer;
+
+    private static final Level level = Level1.get();
 
     public static void main(String[] args) {
         Texture.load();
@@ -24,49 +37,75 @@ public class GUITowerDefence extends JFrame {
         this.setLayout(new BorderLayout());
         this.setResizable(false);
 
-        nextLevel();
+        world = buildWorld(level);
+        gui = buildGui(world);
+        this.add(gui, BorderLayout.CENTER);
+
+        timer = new Timer(FRAME_RATE, e -> step());
+        timer.start();
     }
 
-    private boolean nextLevel() {
-        if (game != null) {
-            throw new IllegalStateException("The previous game must be disposed before a new one can be started");
+    private Gui buildGui(World world) {
+        WorldMap map = world.getMap();
+
+        // Ensure that the map fills the screen
+        this.setSize(Texture.TILE_SIZE * map.getWidth(), Texture.TILE_SIZE * map.getHeight());
+        // Center on screen
+        this.setLocationRelativeTo(null);
+
+        // Create the gui for the game
+        return new Gui(this.getWidth(), this.getHeight(), world);
+    }
+
+    private void step() {
+        // Step the game forward one frame at a constant speed
+        for (int i = 0; i < SIMULATION_RATE; i++) {
+            world.step(SIMULATION_STEP_SIZE);
         }
 
-        int nextLevelIndex = currentLevel + 1;
-        boolean nextLevelExists = levels.length > nextLevelIndex;
-        if (!nextLevelExists) {
-            return false;
+        // Check if critical points are reached
+        if (world.isGameWon()) {
+            handleGameWon();
         }
-        currentLevel = nextLevelIndex;
+        if (world.isGameLost()) {
+            handleGameLost();
+        }
 
-        game = new Game(levels[currentLevel]);
-        game.attachTo(this);
-        game.run();
-        game.onWon(this::handleGameWon);
-        game.onLost(this::handleGameLost);
-        return true;
+        // Update the gui to reflect the current state of the game
+        if (gui != null) {
+            gui.render();
+        }
     }
 
-    private void lostScene() {
-        JPanel panel = new JPanel();
-        panel.setBounds(0, 0, getWidth(), getHeight());
+    private World buildWorld(Level level) {
+        World world = new RikardsWorld(new RikardsWorldMap(level.getMap()));
 
-        JLabel label = new JLabel();
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setAlignmentY(Component.CENTER_ALIGNMENT);
+        for (WorldPosition position : level.getGoals()) {
+            Goal goal = new RikardsGoal(position);
+            world.add(goal);
+        }
 
-        panel.setBackground(new Color(200, 50, 50));
-        label.setForeground(Color.WHITE);
-        label.setText("You lost...");
-        label.setBounds(0, 0, getWidth(), getHeight());
+        for (WorldPosition position : level.getTowers()) {
+            Tower tower = new RikardsTower(position);
+            world.add(tower);
+        }
 
-        panel.add(label);
-        add(panel);
+        for (WorldPosition position : level.getMonsters()) {
+            Monster monster = new RikardsMonster(position, MONSTER_HEALTH);
+            world.add(monster);
+        }
 
-        repaint();
+        return world;
     }
 
-    private void wonScene() {
+    private void endGame() {
+        timer.stop();
+        gui.getParent().remove(gui);
+    }
+
+    private void handleGameWon() {
+        endGame();
+
         JPanel panel = new JPanel();
         panel.setBounds(0, 0, getWidth(), getHeight());
 
@@ -85,18 +124,25 @@ public class GUITowerDefence extends JFrame {
         repaint();
     }
 
-    private void handleGameWon() {
-        game.dispose();
-        game = null;
-        if (nextLevel()) {
-            return;
-        }
-        wonScene();
-    }
-
     private void handleGameLost() {
-        game.dispose();
-        lostScene();
+        endGame();
+
+        JPanel panel = new JPanel();
+        panel.setBounds(0, 0, getWidth(), getHeight());
+
+        JLabel label = new JLabel();
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+        panel.setBackground(new Color(200, 50, 50));
+        label.setForeground(Color.WHITE);
+        label.setText("You lost...");
+        label.setBounds(0, 0, getWidth(), getHeight());
+
+        panel.add(label);
+        add(panel);
+
+        repaint();
     }
 
 
