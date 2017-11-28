@@ -136,6 +136,40 @@ public class JRoadTile extends JTile {
     }
 
     private static int getTIntersectionRotation(TilePosition pos, TilePosition[] neighbours) {
-        return 0;
+        // Hitta grannen som inte finns med i neighbours
+
+        if(hasNeighborOnSide(1, pos, neighbours)) {
+            return 2;
+        } else if(hasNeighborOnSide(2, pos, neighbours)) {
+            return 3;
+        } else if(hasNeighborOnSide(4, pos, neighbours)) {
+            return 0;
+        } else if(hasNeighborOnSide(8, pos, neighbours)) {
+            return 1;
+        } else {
+            throw new IllegalArgumentException("The neightbours seem to be incorrect");
+        }
+    }
+
+    //  1
+    // 8 2
+    //  4
+    private static boolean hasNeighborOnSide(int side, TilePosition pos, TilePosition[] neighbours) {
+        int allSides = 1+2+4+8;
+        for(TilePosition neighbour : neighbours) {
+            if(neighbour.getY() > pos.getY()) {
+                allSides -= 4;
+            } else if(neighbour.getY() < pos.getY()) {
+                allSides -= 1;
+            } else if(neighbour.getX() > pos.getX()) {
+                allSides -= 2;
+            } else if(neighbour.getX() < pos.getX()) {
+                allSides -= 8;
+            } else {
+                throw new IllegalArgumentException("The neighbour must be on one of the tiles sides");
+            }
+        }
+
+        return allSides == side;
     }
 }

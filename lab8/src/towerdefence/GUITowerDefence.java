@@ -5,6 +5,7 @@ import towerdefence.graphics.Gui;
 import towerdefence.graphics.Texture;
 import towerdefence.levels.Level;
 import towerdefence.levels.Level1;
+import towerdefence.levels.Level2;
 import towerdefence.util.WorldPosition;
 
 import javax.swing.*;
