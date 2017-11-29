@@ -9,12 +9,14 @@ import java.util.Optional;
 public class RikardsTower extends RikardsGameObject implements Tower {
 
     private GameObject lastTarget;
-    private long lastShot;
+    private final int shotDelay = 1000;
+    private final int damage = 3;
+    private final float hitChance = 0.5f;
+    private final float range = 4;
+
     private boolean lastShotHit;
-    private int shotDelay = 1000;
-    private int damage = 3;
-    private float hitChance = 0.5f;
-    private float range = 4;
+    // Start shooting immediately
+    private long lastShot = -shotDelay;
 
     public RikardsTower(WorldPosition position) {
         super();

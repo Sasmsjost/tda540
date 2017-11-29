@@ -5,7 +5,6 @@ import towerdefence.graphics.Gui;
 import towerdefence.graphics.Texture;
 import towerdefence.levels.Level;
 import towerdefence.levels.Level1;
-import towerdefence.levels.Level2;
 import towerdefence.util.WorldPosition;
 
 import javax.swing.*;
@@ -55,7 +54,10 @@ public class GUITowerDefence extends JFrame {
         this.setLocationRelativeTo(null);
 
         // Create the gui for the game
-        return new Gui(this.getWidth(), this.getHeight(), world);
+        Gui gui = new Gui(world);
+        gui.setSize(this.getWidth(), this.getHeight());
+        return gui;
+
     }
 
     private void step() {
@@ -101,10 +103,13 @@ public class GUITowerDefence extends JFrame {
 
     private void endGame() {
         timer.stop();
-        gui.getParent().remove(gui);
+        if (gui != null) {
+            gui.getParent().remove(gui);
+        }
     }
 
     private void handleGameWon() {
+        System.out.println("You won!");
         endGame();
 
         JPanel panel = new JPanel();
@@ -126,6 +131,7 @@ public class GUITowerDefence extends JFrame {
     }
 
     private void handleGameLost() {
+        System.out.println("You lost...");
         endGame();
 
         JPanel panel = new JPanel();

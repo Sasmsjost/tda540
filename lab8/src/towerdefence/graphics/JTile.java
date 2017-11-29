@@ -6,12 +6,8 @@ import towerdefence.util.WorldPosition;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.LinkedList;
-import java.util.List;
 
 public  class JTile extends JComponent {
-    public static List<JTile> allTiles = new LinkedList<>();
-
     private float rotation = 0;
     private Image[] texture;
 
@@ -25,7 +21,6 @@ public  class JTile extends JComponent {
         this.texture = texture;
         this.world = world;
         setTilePosition(0,0);
-        allTiles.add(this);
     }
 
     public void animate() {

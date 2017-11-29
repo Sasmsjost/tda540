@@ -5,24 +5,30 @@ import towerdefence.WorldMap;
 import towerdefence.go.GameObject;
 import towerdefence.go.Monster;
 import towerdefence.go.Tower;
+import towerdefence.util.TilePosition;
 import towerdefence.util.WorldPosition;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class Gui extends JLayeredPane {
     private final Map<GameObject, JTile> gameObjectToTile = new HashMap<>();
     private final Map<Tower, JBeam> towerToBeam = new HashMap<>();
+    private final List<JTile> allTiles = new LinkedList<>();
 
-    public Gui(int width, int height, World world) {
-        setBounds(0, 0, width, height);
-        setLayout(null);
+    public Gui(World world) {
+        super();
+        addPanel(createBackgroundPanel(world));
+        addPanel(createGameObjectsPanel(world));
+        addPanel(createFxPanel(world));
 
-        addTilePanel(world);
-        addGameObjectsPanel(world);
-        addFxPanel(world);
+        enableAutoResize();
     }
 
     public void render() {
@@ -40,14 +46,14 @@ public class Gui extends JLayeredPane {
             WorldPosition pos = tower.getPosition();
             WorldPosition targetPos = target.getPosition();
             int padding = beam.getRenderPadding();
-            beam.setBounds(getScreenBoundingBox(pos, targetPos, padding));
+            beam.setBounds(computeScreenBoundingBox(pos, targetPos, padding));
         });
 
-        JTile.allTiles.forEach(JTile::animate);
+        allTiles.forEach(JTile::animate);
         repaint();
     }
 
-    private Rectangle getScreenBoundingBox(WorldPosition pos1, WorldPosition pos2, int padding) {
+    private Rectangle computeScreenBoundingBox(WorldPosition pos1, WorldPosition pos2, int padding) {
         // Find the minimal bounding box for fx
         int x = (int) ((Math.min(pos1.getX(), pos2.getX()) + 0.5) * Texture.TILE_SIZE);
         int y = (int) ((Math.min(pos1.getY(), pos2.getY()) + 0.5) * Texture.TILE_SIZE);
@@ -59,16 +65,15 @@ public class Gui extends JLayeredPane {
         return new Rectangle(x - padding, y - padding, width + padding * 2, height + padding * 2);
     }
 
-    private void addTilePanel(World world) {
-        addPanel(createTilePanel(world));
-    }
 
-    private void addGameObjectsPanel(World world) {
-        addPanel(createGameObjectsPanel(world));
-    }
-
-    private void addFxPanel(World world) {
-        addPanel(createFxPanel(world));
+    private void enableAutoResize() {
+        addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                for (Component component : Gui.this.getComponents()) {
+                    component.setSize(getWidth(), getHeight());
+                }
+            }
+        });
     }
 
     private void addPanel(JPanel panel) {
@@ -77,30 +82,49 @@ public class Gui extends JLayeredPane {
     }
 
 
+    private JTile createGameObjectTile(GameObject go, World world) {
+        if (go instanceof Monster) {
+            Monster monster = (Monster) go;
+            return new JMonster(monster, world);
+        } else if (go instanceof Tower) {
+            Tower tower = (Tower) go;
+            return new JTower(tower, world);
+        } else {
+            Image[] texture = Texture.get(go.getType());
+            return new JTile(texture, world);
+        }
+    }
+
+    private JTile createBackgroundTile(TilePosition pos, World world) {
+        WorldMap map = world.getMap();
+        int type = map.getTypeAt(pos);
+
+        switch (type) {
+            case WorldMap.ROAD:
+                return JRoadTile.fromPosition(pos, world);
+            case WorldMap.GRASS:
+                return new JGrassTile(world);
+            default:
+                Image[] icons = Texture.get(type);
+                return new JTile(icons, world);
+        }
+    }
+
+
     private JPanel createGameObjectsPanel(World world) {
         JPanel tiles = new JPanel();
         tiles.setBackground(null);
         tiles.setOpaque(false);
         tiles.setLayout(null);
-        tiles.setBounds(0, 0, getWidth(), getHeight());
 
         world.getGameObjects().forEach(go -> {
-            JTile tile;
-            if (go instanceof Monster) {
-                Monster monster = (Monster) go;
-                tile = new JMonster(monster, world);
-            } else if (go instanceof Tower) {
-                Tower tower = (Tower) go;
-                tile = new JTower(tower, world);
-            } else {
-                Image[] texture = Texture.get(go.getType());
-                tile = new JTile(texture, world);
-            }
+            JTile tile = createGameObjectTile(go, world);
 
             WorldPosition position = go.getPosition();
             tile.setTilePosition(position);
-            tiles.add(tile);
 
+            tiles.add(tile);
+            allTiles.add(tile);
             gameObjectToTile.put(go, tile);
         });
 
@@ -112,7 +136,6 @@ public class Gui extends JLayeredPane {
         fx.setBackground(null);
         fx.setOpaque(false);
         fx.setLayout(null);
-        fx.setBounds(0, 0, getWidth(), getHeight());
 
         world.getTowers().forEach(tower -> {
             JBeam beam = new JBeam(tower, world, 20);
@@ -123,28 +146,15 @@ public class Gui extends JLayeredPane {
         return fx;
     }
 
-    private JPanel createTilePanel(World world) {
+    private JPanel createBackgroundPanel(World world) {
         JPanel tiles = new JPanel();
         tiles.setLayout(null);
-        tiles.setBounds(0, 0, getWidth(), getHeight());
-
-        WorldMap map = world.getMap();
 
         world.getMap().getTilePositions().forEach(pos -> {
-            int type = map.getTypeAt(pos);
-
-            JTile tile;
-            if (type == WorldMap.ROAD) {
-                tile = JRoadTile.fromPosition(pos, world);
-            } else if (type == WorldMap.GRASS) {
-                tile = new JGrassTile(world);
-            } else {
-                Image[] icons = Texture.get(type);
-                tile = new JTile(icons, world);
-            }
-
+            JTile tile = createBackgroundTile(pos, world);
             tile.setTilePosition(pos);
 
+            allTiles.add(tile);
             tiles.add(tile);
         });
         return tiles;
