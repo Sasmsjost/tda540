@@ -54,7 +54,7 @@ public class GUITowerDefence extends JFrame {
         this.setLocationRelativeTo(null);
 
         // Create the gui for the game
-        Gui gui = new Gui(world);
+        Gui gui = new Gui(world, false);
         gui.setSize(this.getWidth(), this.getHeight());
         return gui;
 

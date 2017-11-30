@@ -25,6 +25,7 @@ public final class Level1 {
             new WorldPosition(4, 4),
             new WorldPosition(5, 2),
             new WorldPosition(3, 0),
+            new WorldPosition(0, 5),
             new WorldPosition(5, 7),
     }, new WorldPosition[]{
             new WorldPosition(4, 0),

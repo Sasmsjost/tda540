@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,8 +23,12 @@ public class Gui extends JLayeredPane {
     private final Map<Tower, JBeam> towerToBeam = new HashMap<>();
     private final List<JTile> allTiles = new LinkedList<>();
 
-    public Gui(World world) {
+    private BufferedImage backgroundImage;
+    private boolean disableShader = false;
+
+    public Gui(World world, boolean disableShader) {
         super();
+        this.disableShader = disableShader;
         addPanel(createBackgroundPanel(world));
         addPanel(createGameObjectsPanel(world));
         addPanel(createFxPanel(world));
@@ -47,9 +52,19 @@ public class Gui extends JLayeredPane {
             WorldPosition targetPos = target.getPosition();
             int padding = beam.getRenderPadding();
             beam.setBounds(computeScreenBoundingBox(pos, targetPos, padding));
+
+            if (!disableShader) {
+                beam.setBackgroundImage(backgroundImage);
+            }
         });
 
         allTiles.forEach(JTile::animate);
+
+
+        // Save render pass for shaders next round
+        if (!disableShader) {
+            paintAll(backgroundImage.getGraphics());
+        }
         repaint();
     }
 
@@ -72,13 +87,21 @@ public class Gui extends JLayeredPane {
                 for (Component component : Gui.this.getComponents()) {
                     component.setSize(getWidth(), getHeight());
                 }
+
+                if (!disableShader) {
+                    backgroundImage = new BufferedImage(
+                            getWidth(),
+                            getHeight(),
+                            BufferedImage.TYPE_INT_RGB
+                    );
+                }
             }
         });
     }
 
     private void addPanel(JPanel panel) {
-        add(panel);
-        moveToFront(panel);
+        this.add(panel);
+        this.moveToFront(panel);
     }
 
 
@@ -138,7 +161,7 @@ public class Gui extends JLayeredPane {
         fx.setLayout(null);
 
         world.getTowers().forEach(tower -> {
-            JBeam beam = new JBeam(tower, world, 20);
+            JBeam beam = new JBeam(tower, world, backgroundImage, 80);
             fx.add(beam);
             towerToBeam.put(tower, beam);
         });

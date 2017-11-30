@@ -7,17 +7,79 @@ import towerdefence.util.WorldPosition;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
 
 public final class JBeam extends JComponent {
+    private static final int SHADER_ACCURACY = 2;
+    private static final float lifetime = 1000;
+
     private Tower tower;
     private int offset;
     private World world;
-    private static final float lifetime = 1000;
+    private BufferedImage background;
 
-    public JBeam(Tower tower, World world, int offset) {
+    public JBeam(Tower tower, World world, BufferedImage background, int offset) {
+        this.background = background;
         this.tower = tower;
         this.world = world;
         this.offset = offset;
+    }
+
+    private void paintBlurredBackground(Graphics2D g2d, WorldPosition to, float delta) {
+        if (background == null) {
+            return;
+        }
+
+        WorldPosition pos1 = tower.getPosition();
+        WorldPosition pos2 = tower.getLastTarget().getPosition();
+        int x0 = (int) ((Math.min(pos1.getX(), pos2.getX()) + 0.5) * Texture.TILE_SIZE) - getRenderPadding();
+        int y0 = (int) ((Math.min(pos1.getY(), pos2.getY()) + 0.5) * Texture.TILE_SIZE) - getRenderPadding();
+
+        int maxDist = offset * offset;
+
+        double ampCurve = (1 - Math.pow(delta * 2 - 1, 2));
+
+        for (int i = 0; i < getWidth() / SHADER_ACCURACY; i++) {
+            for (int j = 0; j < getHeight() / SHADER_ACCURACY; j++) {
+                int x = i * SHADER_ACCURACY;
+                int y = j * SHADER_ACCURACY;
+                double dist = (Math.pow(to.getX() - x, 2f) + Math.pow(to.getY() - y, 2f)) + 1;
+
+                if (dist > maxDist * ampCurve) {
+                    continue;
+                }
+
+                double invDist = (maxDist - dist) / maxDist;
+                double amp = invDist * ampCurve;
+                double n = world.now() / 100f;
+
+                double ox = Math.cos(n * 2 + amp * 20) * amp * 10;
+                double oy = Math.sin(n + amp * 5) * amp * 10;
+
+                ox = Math.abs(ox);
+                oy = Math.abs(oy);
+
+                int wx = (int) Math.round(x + x0 + ox);
+                int wy = (int) Math.round(y + y0 + oy);
+
+                if (wx > background.getWidth()) {
+                    wx = background.getWidth();
+                } else if (wx < 0) {
+                    wx = 0;
+                }
+
+                if (wy > background.getHeight()) {
+                    wy = background.getHeight();
+                } else if (wy < 0) {
+                    wy = 0;
+                }
+
+                Color c = new Color(background.getRGB(wx, wy));
+                g2d.setColor(c);
+
+                g2d.fillRect(x, y, SHADER_ACCURACY, SHADER_ACCURACY);
+            }
+        }
     }
 
     @Override
@@ -30,6 +92,7 @@ public final class JBeam extends JComponent {
         WorldPosition from = tower.getPosition();
         WorldPosition to = tower.getLastTarget().getPosition();
 
+
         // Transform from global to local coordinates
         float minX = (Math.min(to.getX(), from.getX()));
         float minY = (Math.min(to.getY(), from.getY()));
@@ -40,8 +103,8 @@ public final class JBeam extends JComponent {
 
         // Calculate delta value from shot started with respect to lifetime
         long now = world.now();
-        float delta = 1 - Math.min(now - tower.getLastShot(), lifetime) / lifetime;
-        int opacity = (int) (delta * 255);
+        float delta = 1f - Math.min(now - tower.getLastShot(), lifetime) / lifetime;
+        int opacity = (int) (Math.sqrt(delta) * 255);
 
         // Increase the shot speed with time
         float dx = x2 - x;
@@ -52,6 +115,7 @@ public final class JBeam extends JComponent {
 
         boolean isHit = tower.isLastShotHit();
         if (isHit) {
+            paintBlurredBackground(g2d, new WorldPosition(x2, y2), delta);
             drawLine(g2d, x, y, x2, y2, delta, new Color(255, 50, 100, opacity));
             drawLine(g2d, x, y, x2, y2, delta, new Color(50, 255, 100, opacity));
             drawLine(g2d, x, y, x2, y2, delta, new Color(100, 120, 255, opacity));
@@ -85,5 +149,9 @@ public final class JBeam extends JComponent {
 
     public int getRenderPadding() {
         return offset;
+    }
+
+    public void setBackgroundImage(BufferedImage backgroundImage) {
+        this.background = backgroundImage;
     }
 }
