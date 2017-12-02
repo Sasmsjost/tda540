@@ -58,11 +58,7 @@ public class Gui extends JLayeredPane {
                 }
 
                 if (!disableShader) {
-                    renderBuffer = new BufferedImage(
-                            getWidth(),
-                            getHeight(),
-                            BufferedImage.TYPE_INT_RGB
-                    );
+                    renderBuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
                 }
 
                 towerToBeam.values().forEach(beam -> {

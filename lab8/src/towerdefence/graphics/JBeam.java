@@ -18,6 +18,7 @@ public final class JBeam extends JComponent {
     private World world;
     private BufferedImage background;
     private Color[] colors;
+    private BufferedImage blurredBackground = new BufferedImage(getShaderSize(), getShaderSize(), BufferedImage.TYPE_INT_ARGB);
 
     public JBeam(Tower tower, World world, BufferedImage background) {
         this.background = background;
@@ -28,6 +29,10 @@ public final class JBeam extends JComponent {
         for (int i = 0; i < 10; i++) {
             colors[i] = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
         }
+    }
+
+    private static int getShaderSize() {
+        return (int) (SHADER_SIZE * 2f / SHADER_ACCURACY);
     }
 
     /**
@@ -44,17 +49,18 @@ public final class JBeam extends JComponent {
         g2d.setStroke(new BasicStroke(8));
         g2d.drawOval((int) (to.getX() - size / 2), (int) (to.getY() - size / 2), size, size);
 
-        for (int i = 0; i < SHADER_SIZE * 2 / SHADER_ACCURACY; i++) {
-            for (int j = 0; j < SHADER_SIZE * 2 / SHADER_ACCURACY; j++) {
+        for (int i = 0; i < getShaderSize(); i++) {
+            for (int j = 0; j < getShaderSize(); j++) {
                 int x = (int) (to.getX() - SHADER_SIZE + i * SHADER_ACCURACY);
                 int y = (int) (to.getY() - SHADER_SIZE + j * SHADER_ACCURACY);
 
                 float dx = to.getX() - x;
                 float dy = to.getY() - y;
-                double dist = dx * dx + dy * dy + Math.sin(x / 100f) * Math.cos(y / 100f) * 10000 * delta;
+                double dist = dx * dx + dy * dy + Math.sin(x / 100f * delta) * Math.cos(y / 10f * delta) * 10000 * delta;
 
                 // Only distort things within a certain distance
                 if (dist > maxDist) {
+                    blurredBackground.setRGB(i, j, 0x00000000);
                     continue;
                 }
 
@@ -67,10 +73,6 @@ public final class JBeam extends JComponent {
                 // The distortion function, just something random which looks reasonable
                 double ox = Math.cos(n * 2 + amp * 20) * amp * 20 + Math.sin(n + amp) * amp * 20;
                 double oy = Math.sin(n + amp * 5) * amp * 20 + Math.cos(n + amp) * amp * 20;
-
-                // Does only work for positive values
-                ox = Math.abs(ox);
-                oy = Math.abs(oy);
 
                 // Ensure that we don't venture outside the image bounds
                 int wx = (int) Math.round(x + ox);
@@ -86,13 +88,13 @@ public final class JBeam extends JComponent {
                     wy = 0;
                 }
 
-                // Fill the current pixel with the distorted color
-                Color c = new Color(background.getRGB(wx, wy));
-                g2d.setColor(c);
-                g2d.fillRect(x, y, SHADER_ACCURACY, SHADER_ACCURACY);
+                blurredBackground.setRGB(i, j, background.getRGB(wx, wy));
             }
         }
 
+        int x = (int) ((to.getX() + Texture.TILE_SIZE) - SHADER_SIZE * 2);
+        int y = (int) ((to.getY() + Texture.TILE_SIZE) - SHADER_SIZE * 2);
+        g2d.drawImage(blurredBackground, x, y, SHADER_SIZE * 2, SHADER_SIZE * 2, null);
     }
 
     @Override
