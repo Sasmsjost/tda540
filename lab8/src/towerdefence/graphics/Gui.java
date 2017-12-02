@@ -23,7 +23,7 @@ public class Gui extends JLayeredPane {
     private final Map<Tower, JBeam> towerToBeam = new HashMap<>();
     private final List<JTile> allTiles = new LinkedList<>();
 
-    private BufferedImage backgroundImage;
+    private BufferedImage renderBuffer;
     private boolean disableShader = false;
 
     public Gui(World world, boolean disableShader) {
@@ -41,45 +41,14 @@ public class Gui extends JLayeredPane {
             tile.setTilePosition(go.getPosition());
         });
 
-        towerToBeam.forEach((tower, beam) -> {
-            GameObject target = tower.getLastTarget();
-            if (target == null) {
-                beam.setBounds(0, 0, 0, 0);
-                return;
-            }
-
-            WorldPosition pos = tower.getPosition();
-            WorldPosition targetPos = target.getPosition();
-            int padding = beam.getRenderPadding();
-            beam.setBounds(computeScreenBoundingBox(pos, targetPos, padding));
-
-            if (!disableShader) {
-                beam.setBackgroundImage(backgroundImage);
-            }
-        });
-
         allTiles.forEach(JTile::animate);
 
-
-        // Save render pass for shaders next round
+        // Do render pass for shaders
         if (!disableShader) {
-            paintAll(backgroundImage.getGraphics());
+            paintAll(renderBuffer.getGraphics());
         }
         repaint();
     }
-
-    private Rectangle computeScreenBoundingBox(WorldPosition pos1, WorldPosition pos2, int padding) {
-        // Find the minimal bounding box for fx
-        int x = (int) ((Math.min(pos1.getX(), pos2.getX()) + 0.5) * Texture.TILE_SIZE);
-        int y = (int) ((Math.min(pos1.getY(), pos2.getY()) + 0.5) * Texture.TILE_SIZE);
-        int x2 = (int) ((Math.max(pos1.getX(), pos2.getX()) + 0.5) * Texture.TILE_SIZE);
-        int y2 = (int) ((Math.max(pos1.getY(), pos2.getY()) + 0.5) * Texture.TILE_SIZE);
-        int width = x2 - x;
-        int height = y2 - y;
-
-        return new Rectangle(x - padding, y - padding, width + padding * 2, height + padding * 2);
-    }
-
 
     private void enableAutoResize() {
         addComponentListener(new ComponentAdapter() {
@@ -89,12 +58,19 @@ public class Gui extends JLayeredPane {
                 }
 
                 if (!disableShader) {
-                    backgroundImage = new BufferedImage(
+                    renderBuffer = new BufferedImage(
                             getWidth(),
                             getHeight(),
                             BufferedImage.TYPE_INT_RGB
                     );
                 }
+
+                towerToBeam.values().forEach(beam -> {
+                    beam.setBounds(0, 0, getWidth(), getHeight());
+                    if (!disableShader) {
+                        beam.setSampleImage(renderBuffer);
+                    }
+                });
             }
         });
     }
@@ -161,7 +137,7 @@ public class Gui extends JLayeredPane {
         fx.setLayout(null);
 
         world.getTowers().forEach(tower -> {
-            JBeam beam = new JBeam(tower, world, backgroundImage, 80);
+            JBeam beam = new JBeam(tower, world, renderBuffer);
             fx.add(beam);
             towerToBeam.put(tower, beam);
         });

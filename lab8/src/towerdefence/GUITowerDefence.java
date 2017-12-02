@@ -16,7 +16,7 @@ public class GUITowerDefence extends JFrame {
     // The step size on a simulation, lower values means more CPU usage
     private static final int SIMULATION_STEP_SIZE = 2;
     // How many simulations we run per frame
-    private static final int SIMULATION_RATE = 8;
+    private static final int SIMULATION_RATE = 4;
     // The maximum heath of a monster
     private static final int MONSTER_HEALTH = 50;
 
