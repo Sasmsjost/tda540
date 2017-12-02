@@ -51,7 +51,7 @@ public final class JBeam extends JComponent {
 
                 float dx = to.getX() - x;
                 float dy = to.getY() - y;
-                double dist = dx * dx + dy * dy + Math.sin(dx) * Math.cos(dy) * 500 * delta;
+                double dist = dx * dx + dy * dy + Math.sin(x / 100f) * Math.cos(y / 100f) * 10000 * delta;
 
                 // Only distort things within a certain distance
                 if (dist > maxDist) {
