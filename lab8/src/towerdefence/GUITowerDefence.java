@@ -18,7 +18,7 @@ public class GUITowerDefence extends JFrame {
     // How many simulations we run per frame
     private static final int SIMULATION_RATE = 4;
     // The maximum heath of a monster
-    private static final int MONSTER_HEALTH = 50;
+    private static final int MONSTER_HEALTH = 60;
 
     private Gui gui;
     private World world;

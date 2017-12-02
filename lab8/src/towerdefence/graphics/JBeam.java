@@ -38,14 +38,19 @@ public final class JBeam extends JComponent {
     /**
      * Software shader, not too optimized but runnable on runnable hardware
      */
-    private void paintBlurredBackground(Graphics2D g2d, WorldPosition to, double delta) {
+    private void paintBlurredBackground(Graphics2D g2d, WorldPosition to, double delta, double passed) {
 
         // Convert 0-1 > 0-1-0
         double ampCurve = (1 - Math.pow(delta * 2 - 1, 2));
         int maxDist = (int) (SHADER_SIZE * SHADER_SIZE * ampCurve);
 
         int size = (int) Math.min(maxDist * 0.05, SHADER_SIZE);
-        g2d.setColor(new Color(255, 255, 255, (int) (255 * ampCurve)));
+        if (passed > 0.5) {
+            g2d.setColor(new Color(255, 255, 255, (int) (255 * ampCurve)));
+        } else {
+            int gb = (int) (passed * 255);
+            g2d.setColor(new Color(255, gb, gb, (int) (255 * ampCurve)));
+        }
         g2d.setStroke(new BasicStroke(8));
         g2d.drawOval((int) (to.getX() - size / 2), (int) (to.getY() - size / 2), size, size);
 
@@ -56,10 +61,11 @@ public final class JBeam extends JComponent {
 
                 float dx = to.getX() - x;
                 float dy = to.getY() - y;
-                double dist = dx * dx + dy * dy + Math.sin(x / 100f * delta) * Math.cos(y / 10f * delta) * 10000 * delta;
+                double dist = dx * dx + dy * dy + Math.sin(x / 3f * delta) * Math.cos(y / 10f * delta) * 100;
 
                 // Only distort things within a certain distance
                 if (dist > maxDist) {
+                    // Make everything else transparent
                     blurredBackground.setRGB(i, j, 0x00000000);
                     continue;
                 }
@@ -136,7 +142,7 @@ public final class JBeam extends JComponent {
         boolean isHit = tower.isLastShotHit();
         if (isHit) {
             if (background != null) {
-                paintBlurredBackground(g2d, new WorldPosition(tx, ty), nDelta);
+                paintBlurredBackground(g2d, new WorldPosition(tx, ty), nDelta, delta);
             }
 
             for (Color c : colors) {
