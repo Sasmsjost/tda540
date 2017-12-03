@@ -61,7 +61,10 @@ public final class JBeam extends JComponent {
 
                 float dx = to.getX() - x;
                 float dy = to.getY() - y;
-                double dist = dx * dx + dy * dy + Math.sin(x / 3f * delta) * Math.cos(y / 10f * delta) * 100;
+                // Change the distance based on where on the map we are to make the effect less "stiff"
+                // Could be pre calculated to improve performance, i think...
+                double offset = Math.sin(x / 3f * delta) * Math.cos(y / 10f * delta) * 100;
+                double dist = dx * dx + dy * dy + offset;
 
                 // Only distort things within a certain distance
                 if (dist > maxDist) {
@@ -83,13 +86,13 @@ public final class JBeam extends JComponent {
                 // Ensure that we don't venture outside the image bounds
                 int wx = (int) Math.round(x + ox);
                 int wy = (int) Math.round(y + oy);
-                if (wx > background.getWidth()) {
-                    wx = background.getWidth();
+                if (wx > background.getWidth() - 1) {
+                    wx = background.getWidth() - 1;
                 } else if (wx < 0) {
                     wx = 0;
                 }
-                if (wy > background.getHeight()) {
-                    wy = background.getHeight();
+                if (wy > background.getHeight() - 1) {
+                    wy = background.getHeight() - 1;
                 } else if (wy < 0) {
                     wy = 0;
                 }
