@@ -1,5 +1,8 @@
 package towerdefence;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 /**
  * This is a program (file) for *all* tests (testing the model)
  */
@@ -7,14 +10,28 @@ public class Test {
 
     public static void main(String[] args) {
         System.out.println("towerdefence.Test Start");
-        // Call test methods here
+        runTests();
         System.out.println("towerdefence.Test Finished");
+    }
+
+    private static void runTests() {
+        Test test = new Test();
+        Method[] methods = Test.class.getMethods();
+        for (Method method : methods) {
+            if (method.getName().contains("test")) {
+                try {
+                    method.invoke(test);
+                    System.out.printf("Ok\t\t%s\n", method.getName());
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    System.err.printf("Failed\t\t%s - %s\n", method.getName(), e.getCause());
+                }
+            }
+        }
     }
 
     // Write your test methods here, see PigWTest for example
     // towerdefence.Test method should end with call to some Helper (below)
     // i.e. test should pass or exception
-
 
     // ------- Helpers -------------------
 
