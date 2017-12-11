@@ -7,7 +7,7 @@ import towerdefence.util.Tuple;
 
 import java.awt.*;
 
-public class JRoadTile extends JTile {
+final class JRoadTile extends JTile {
     private static final int STRAIGHT = 0;
     private static final int CORNER = 1;
     private static final int TINTERSECTION = 2;
@@ -19,12 +19,12 @@ public class JRoadTile extends JTile {
      * @param rotation Rotation of the tile, 0 <= rotation <= 3
      * @param world    The world context the tile lies in
      */
-    public JRoadTile(int type, int rotation, World world) {
+    JRoadTile(int type, int rotation, World world) {
         super(getTexture(type), world);
         setRotation((float) (rotation * Math.PI / 2f));
     }
 
-    public static JRoadTile fromPosition(TilePosition pos, World world) {
+    static JRoadTile fromPosition(TilePosition pos, World world) {
         TilePosition[] neightbours = world.getMap().getNeighborsOfType(WorldMap.ROAD, pos);
         Tuple<Integer, Integer> intersection = JRoadTile.getTypeOfRoad(pos, neightbours);
         int intType = intersection.a;

@@ -8,10 +8,10 @@ import towerdefence.util.WorldPosition;
 
 import java.awt.*;
 
-public class JTower extends JTile {
+final class JTower extends JTile {
     private Tower tower;
 
-    public JTower(Tower tower, World world) {
+    JTower(Tower tower, World world) {
         super(Texture.get(WorldMap.TOWER), world);
         this.tower = tower;
     }

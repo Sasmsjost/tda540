@@ -6,10 +6,10 @@ import towerdefence.go.Monster;
 
 import java.awt.*;
 
-public  class JMonster extends JTile {
+final class JMonster extends JTile {
     private Monster monster;
 
-    public JMonster(Monster monster, World world) {
+    JMonster(Monster monster, World world) {
         super(Texture.get(WorldMap.MONSTER), world);
         this.monster= monster;
         animationSpeed = 100;
