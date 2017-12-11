@@ -7,7 +7,7 @@ import towerdefence.util.WorldPosition;
 import javax.swing.*;
 import java.awt.*;
 
-public  class JTile extends JComponent {
+public class JTile extends JComponent {
     private float rotation = 0;
     private Image[] texture;
 

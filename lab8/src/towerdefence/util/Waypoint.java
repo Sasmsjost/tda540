@@ -1,5 +1,9 @@
 package towerdefence.util;
 
+/**
+ * A doubly linked list node describing a waypoint.
+ * The succeeding node can be gotten using Waypoint#getNext()
+ */
 public class Waypoint {
     private Waypoint previous;
     private Waypoint next;
@@ -13,7 +17,6 @@ public class Waypoint {
         return new TilePosition(position.x - previous.position.x, position.y - previous.position.y);
     }
 
-    //doesn't seam to be used
     public int getLength() {
         int count = 0;
         Waypoint child = next;
@@ -24,9 +27,15 @@ public class Waypoint {
         return count;
     }
 
-    // Since we only need to move in a single direction at a time,
-    // we only have to ensure that a single dimensional check
-    // is true to return that the position has passed
+
+    /**
+     * Since we only need to move in a single direction at a time,
+     * we only have to ensure that a single dimensional check
+     * is true to return tha the position has passed
+     *
+     * @param position The position to check, usually the position of a GameObject
+     * @return Weather the position has been passed
+     */
     public boolean hasPassedPosition(WorldPosition position) {
         TilePosition direction = getDirection();
         int dx = this.position.x - position.x.intValue();

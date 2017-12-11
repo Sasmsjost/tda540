@@ -5,5 +5,7 @@ public interface Tower extends GameObject {
 
     long getLastShot();
 
+    int getShotDelay();
+
     GameObject getLastTarget();
 }

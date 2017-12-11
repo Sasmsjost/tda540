@@ -3,6 +3,9 @@ package towerdefence.go;
 import towerdefence.World;
 import towerdefence.util.WorldPosition;
 
+/**
+ * The base class which all game objects are derived from
+ */
 public abstract class RikardsGameObject {
     protected WorldPosition position = new WorldPosition(0f, 0f);
 

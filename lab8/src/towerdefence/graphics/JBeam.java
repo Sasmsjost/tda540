@@ -9,19 +9,22 @@ import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
-public final class JBeam extends JComponent {
+/**
+ * Stateless effect for tower shots since they are only simulated using a random value,
+ * not using ray tracing or physics. The effect fails if a shot is active whilst
+ */
+final class JBeam extends JComponent {
     private static final int SHADER_ACCURACY = 2;
     private static final int SHADER_SIZE = 80;
-    private static final float lifetime = 1000;
 
     private Tower tower;
     private World world;
-    private BufferedImage background;
+    private BufferedImage sampleImage;
     private Color[] colors;
     private BufferedImage blurredBackground = new BufferedImage(getShaderSize(), getShaderSize(), BufferedImage.TYPE_INT_ARGB);
 
-    public JBeam(Tower tower, World world, BufferedImage background) {
-        this.background = background;
+    JBeam(Tower tower, World world, BufferedImage sampleImage) {
+        this.sampleImage = sampleImage;
         this.tower = tower;
         this.world = world;
 
@@ -36,9 +39,9 @@ public final class JBeam extends JComponent {
     }
 
     /**
-     * Software shader, not too optimized but runnable on runnable hardware
+     * Software shader, not too optimized but runnable on reasonable hardware
      */
-    private void paintBlurredBackground(Graphics2D g2d, WorldPosition to, double delta, double passed) {
+    private void paintLenseDistortion(Graphics2D g2d, WorldPosition to, double delta, double passed) {
 
         // Convert 0-1 > 0-1-0
         double ampCurve = (1 - Math.pow(delta * 2 - 1, 2));
@@ -86,23 +89,24 @@ public final class JBeam extends JComponent {
                 // Ensure that we don't venture outside the image bounds
                 int wx = (int) Math.round(x + ox);
                 int wy = (int) Math.round(y + oy);
-                if (wx > background.getWidth() - 1) {
-                    wx = background.getWidth() - 1;
+                if (wx > sampleImage.getWidth() - 1) {
+                    wx = sampleImage.getWidth() - 1;
                 } else if (wx < 0) {
                     wx = 0;
                 }
-                if (wy > background.getHeight() - 1) {
-                    wy = background.getHeight() - 1;
+                if (wy > sampleImage.getHeight() - 1) {
+                    wy = sampleImage.getHeight() - 1;
                 } else if (wy < 0) {
                     wy = 0;
                 }
 
-                blurredBackground.setRGB(i, j, background.getRGB(wx, wy));
+                int sampledColor = sampleImage.getRGB(wx, wy);
+                blurredBackground.setRGB(i, j, sampledColor);
             }
         }
 
-        int x = (int) ((to.getX() + Texture.TILE_SIZE) - SHADER_SIZE * 2);
-        int y = (int) ((to.getY() + Texture.TILE_SIZE) - SHADER_SIZE * 2);
+        int x = (int) ((to.getX() - SHADER_SIZE));
+        int y = (int) ((to.getY()) - SHADER_SIZE);
         g2d.drawImage(blurredBackground, x, y, SHADER_SIZE * 2, SHADER_SIZE * 2, null);
     }
 
@@ -111,11 +115,13 @@ public final class JBeam extends JComponent {
         if (tower.getLastTarget() == null) {
             return;
         }
+        float lifetime = tower.getShotDelay();
         Graphics2D g2d = (Graphics2D) g;
 
         WorldPosition from = tower.getPosition();
         WorldPosition to = tower.getLastTarget().getPosition();
 
+        // Convert from world to texture coordinates
         float x = (from.getX() + 0.5f) * Texture.TILE_SIZE;
         float y = (from.getY() + 0.5f) * Texture.TILE_SIZE;
         float x2 = (to.getX() + 0.5f) * Texture.TILE_SIZE;
@@ -144,8 +150,8 @@ public final class JBeam extends JComponent {
 
         boolean isHit = tower.isLastShotHit();
         if (isHit) {
-            if (background != null) {
-                paintBlurredBackground(g2d, new WorldPosition(tx, ty), nDelta, delta);
+            if (sampleImage != null) {
+                paintLenseDistortion(g2d, new WorldPosition(tx, ty), nDelta, delta);
             }
 
             for (Color c : colors) {
@@ -153,7 +159,7 @@ public final class JBeam extends JComponent {
                 opacity = Math.max(opacity, 0);
                 drawLine(g2d, fx, fy, tx, ty, nDelta, new Color(c.getRed(), c.getGreen(), c.getBlue(), opacity));
             }
-            if (background == null) {
+            if (sampleImage == null) {
                 drawProjectile(g2d, tx, ty, delta, new Color(255, 255, 255, opacity));
             }
         } else {
@@ -185,6 +191,6 @@ public final class JBeam extends JComponent {
     }
 
     public void setSampleImage(BufferedImage backgroundImage) {
-        this.background = backgroundImage;
+        this.sampleImage = backgroundImage;
     }
 }

@@ -6,21 +6,29 @@ import towerdefence.util.WorldPosition;
 
 import java.util.Optional;
 
+/**
+ * The tower in tower defence.
+ * Shoots monsters within range
+ */
 public class RikardsTower extends RikardsGameObject implements Tower {
 
     private GameObject lastTarget;
-    private final int shotDelay = 1000;
-    private final int damage = 3;
-    private final float hitChance = 0.5f;
-    private final float range = 4;
+    private int shotDelay;
+    private int damage;
+    private float hitChance;
+    private float range;
 
     private boolean lastShotHit;
     // Start shooting immediately
-    private long lastShot = -shotDelay;
+    private long lastShot = Integer.MIN_VALUE;
 
-    public RikardsTower(WorldPosition position) {
+    public RikardsTower(WorldPosition position, float range, float hitChance, int damage, int shotDelay) {
         super();
         this.position = position;
+        this.range = range;
+        this.hitChance = hitChance;
+        this.damage = damage;
+        this.shotDelay = shotDelay;
     }
 
     private Monster getClosestMonster(World world) {
@@ -72,6 +80,10 @@ public class RikardsTower extends RikardsGameObject implements Tower {
     @Override
     public int getType() {
         return WorldMap.TOWER;
+    }
+
+    public int getShotDelay() {
+        return shotDelay;
     }
 
     public boolean isLastShotHit() {

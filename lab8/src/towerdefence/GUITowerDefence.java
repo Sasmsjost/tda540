@@ -9,6 +9,7 @@ import towerdefence.util.WorldPosition;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 public class GUITowerDefence extends JFrame {
     // The rate which the game is redrawn
@@ -19,6 +20,9 @@ public class GUITowerDefence extends JFrame {
     private static final int SIMULATION_RATE = 4;
     // The maximum heath of a monster
     private static final int MONSTER_HEALTH = 60;
+    // The path to take
+    private static final int PATH = 1;
+    private static final Random random = new Random();
 
     private Gui gui;
     private World world;
@@ -60,6 +64,32 @@ public class GUITowerDefence extends JFrame {
 
     }
 
+    private World buildWorld(Level level) {
+        World world = new RikardsWorld(new RikardsWorldMap(level.getMap(), PATH));
+
+        for (WorldPosition position : level.getGoals()) {
+            Goal goal = new RikardsGoal(position);
+            world.add(goal);
+        }
+
+        for (WorldPosition position : level.getTowers()) {
+            float range = random.nextInt(3) + 3;
+            int damage = random.nextInt(2) + 2;
+            float hitChance = 0.5f;
+            int shotDelay = random.nextInt(600) + 400;
+
+            Tower tower = new RikardsTower(position, range, hitChance, damage, shotDelay);
+            world.add(tower);
+        }
+
+        for (WorldPosition position : level.getMonsters()) {
+            Monster monster = new RikardsMonster(position, MONSTER_HEALTH);
+            world.add(monster);
+        }
+
+        return world;
+    }
+
     private void step() {
         // Step the game forward one frame at a constant speed
         for (int i = 0; i < SIMULATION_RATE; i++) {
@@ -75,30 +105,10 @@ public class GUITowerDefence extends JFrame {
         }
 
         // Update the gui to reflect the current state of the game
-        if (gui != null) {
-            gui.render();
-        }
-    }
-
-    private World buildWorld(Level level) {
-        World world = new RikardsWorld(new RikardsWorldMap(level.getMap()));
-
-        for (WorldPosition position : level.getGoals()) {
-            Goal goal = new RikardsGoal(position);
-            world.add(goal);
-        }
-
-        for (WorldPosition position : level.getTowers()) {
-            Tower tower = new RikardsTower(position);
-            world.add(tower);
-        }
-
-        for (WorldPosition position : level.getMonsters()) {
-            Monster monster = new RikardsMonster(position, MONSTER_HEALTH);
-            world.add(monster);
-        }
-
-        return world;
+//        if (gui != null) {
+//            gui.render();
+//        }
+        repaint();
     }
 
     private void endGame() {
