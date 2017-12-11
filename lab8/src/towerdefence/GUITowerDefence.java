@@ -32,7 +32,7 @@ public class GUITowerDefence extends JFrame {
 
     public static void main(String[] args) {
         Texture.load();
-        new GUITowerDefence("Tower Defence").setVisible(true);
+        SwingUtilities.invokeLater(() -> new GUITowerDefence("Tower Defence").setVisible(true));
     }
 
     private GUITowerDefence(String title) {
@@ -104,10 +104,10 @@ public class GUITowerDefence extends JFrame {
             handleGameLost();
         }
 
-        // Update the gui to reflect the current state of the game
-//        if (gui != null) {
-//            gui.render();
-//        }
+//         Update the gui to reflect the current state of the game
+        if (gui != null) {
+            gui.render();
+        }
         repaint();
     }
 

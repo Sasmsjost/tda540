@@ -22,6 +22,7 @@ public class Gui extends JLayeredPane {
     private final Map<GameObject, JTile> gameObjectToTile = new HashMap<>();
     private final Map<Tower, JBeam> towerToBeam = new HashMap<>();
     private final List<JTile> allTiles = new LinkedList<>();
+    private final JLayeredPane contentsPanel;
 
     private BufferedImage renderBuffer;
     private boolean disableShader = false;
@@ -29,6 +30,11 @@ public class Gui extends JLayeredPane {
     public Gui(World world, boolean disableShader) {
         super();
         this.disableShader = disableShader;
+
+        contentsPanel = new JLayeredPane();
+        contentsPanel.setVisible(false);
+        this.add(contentsPanel);
+
         addPanel(createBackgroundPanel(world));
         addPanel(createGameObjectsPanel(world));
         addPanel(createFxPanel(world));
@@ -44,16 +50,22 @@ public class Gui extends JLayeredPane {
         allTiles.forEach(JTile::animate);
 
         // Do render pass for shaders
-        if (!disableShader) {
-            paintAll(renderBuffer.getGraphics());
-        }
-        repaint();
+        contentsPanel.setVisible(true);
+        contentsPanel.paintAll(renderBuffer.getGraphics());
+        contentsPanel.setVisible(false);
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.drawImage(renderBuffer, 0, 0, null);
     }
 
     private void enableAutoResize() {
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
-                for (Component component : Gui.this.getComponents()) {
+                contentsPanel.setBounds(0, 0, getWidth(), getHeight());
+                for (Component component : contentsPanel.getComponents()) {
                     component.setSize(getWidth(), getHeight());
                 }
 
@@ -72,8 +84,8 @@ public class Gui extends JLayeredPane {
     }
 
     private void addPanel(JPanel panel) {
-        this.add(panel);
-        this.moveToFront(panel);
+        contentsPanel.add(panel);
+        contentsPanel.moveToFront(panel);
     }
 
 
