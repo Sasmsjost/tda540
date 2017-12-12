@@ -5,6 +5,7 @@ import towerdefence.go.Goal;
 import towerdefence.go.Monster;
 import towerdefence.go.Tower;
 
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface World {
@@ -23,6 +24,8 @@ public interface World {
     Stream<Goal> getGoal();
 
     Stream<GameObject> getGameObjects();
+
+    void addGameObjectAddedListener(Function<GameObject, Void> callback);
 
     boolean isGameWon();
 

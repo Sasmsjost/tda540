@@ -19,7 +19,7 @@ public class GUITowerDefence extends JFrame {
     // How many simulations we run per frame
     private static final int SIMULATION_RATE = 8;
     // The maximum heath of a monster
-    private static final int MONSTER_HEALTH = 100;
+    private static final int MONSTER_HEALTH = 4;
     // The path to take, 0 or 1. Other values are interpreted as 0
     private static final int PATH = 0;
     private static final Random random = new Random();
@@ -82,9 +82,18 @@ public class GUITowerDefence extends JFrame {
             world.add(tower);
         }
 
-        for (WorldPosition position : level.getMonsters()) {
-            Monster monster = new RikardsMonster(position, MONSTER_HEALTH);
-            world.add(monster);
+        if (false) {
+            for (WorldPosition position : level.getMonsters()) {
+                Monster monster = new RikardsMonster(position, MONSTER_HEALTH);
+                world.add(monster);
+            }
+        } else {
+            for (WorldPosition position : level.getMonsters()) {
+                int health = 200;
+                int frequency = 1000;
+                RikardsMonsterSpawner spawner = new RikardsMonsterSpawner(position, health, MONSTER_HEALTH, frequency);
+                world.add(spawner);
+            }
         }
 
         return world;

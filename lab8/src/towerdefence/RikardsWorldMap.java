@@ -155,7 +155,7 @@ public class RikardsWorldMap implements WorldMap {
                     .toArray(TilePosition[]::new);
 
             if (unvisitedNeighbours.length <= 0) {
-                throw new RuntimeException("Can not fin end of path");
+                throw new RuntimeException("Can not find end of path");
             }
 
             if (prioritizedPath < unvisitedNeighbours.length) {

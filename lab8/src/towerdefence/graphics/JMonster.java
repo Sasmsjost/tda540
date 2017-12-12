@@ -18,6 +18,13 @@ final class JMonster extends JTile {
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
+        if (monster.isDead()) {
+            animationSpeed = Integer.MAX_VALUE;
+            g2d.setComposite(AlphaComposite
+                    .getInstance(AlphaComposite.SRC_OVER, 0.1f));
+            super.paintComponent(g);
+            return;
+        }
         double offset = Math.sin(world.now() / 200d) * 5d;
 
         g2d.translate(0, offset);

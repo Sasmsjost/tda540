@@ -6,6 +6,7 @@ import towerdefence.go.Monster;
 import towerdefence.go.Tower;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
@@ -14,8 +15,12 @@ import java.util.stream.Stream;
 public class RikardsWorld implements World {
     private WorldMap worldMap;
     private ArrayList<GameObject> gameObjects;
+    private ArrayList<GameObject> pendingAddGameObjects;
     private long time = 0;
     private long delta = 0;
+    private boolean isSimulating = false;
+
+    private ArrayList<Function<GameObject, Void>> gameObjectAddedListeners;
 
     public RikardsWorld(WorldMap worldMap) {
         if (worldMap == null) {
@@ -24,6 +29,12 @@ public class RikardsWorld implements World {
 
         this.worldMap = worldMap;
         gameObjects = new ArrayList<>();
+        pendingAddGameObjects = new ArrayList<>();
+        gameObjectAddedListeners = new ArrayList<>();
+    }
+
+    public void addGameObjectAddedListener(Function<GameObject, Void> callback) {
+        gameObjectAddedListeners.add(callback);
     }
 
     /**
@@ -37,7 +48,13 @@ public class RikardsWorld implements World {
         }
         this.delta = delta;
         time += delta;
+
+        isSimulating = true;
         gameObjects.forEach(go -> go.act(this));
+        isSimulating = false;
+
+        pendingAddGameObjects.forEach(this::addGameObjectToWorld);
+        pendingAddGameObjects.clear();
     }
 
     /**
@@ -140,7 +157,18 @@ public class RikardsWorld implements World {
             throw new IllegalArgumentException("Can not add a game object of type null to the game");
         }
 
+        if (!isSimulating) {
+            addGameObjectToWorld(gameObject);
+        } else {
+            pendingAddGameObjects.add(gameObject);
+        }
+    }
+
+    private void addGameObjectToWorld(GameObject gameObject) {
         gameObject.addToWorld(this);
         gameObjects.add(gameObject);
+
+        gameObjectAddedListeners.forEach(func -> func.apply(gameObject));
+
     }
 }

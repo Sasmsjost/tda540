@@ -34,6 +34,14 @@ public class RikardsTower extends RikardsGameObject implements Tower {
     private Monster getClosestMonster(World world) {
         // Get closest monster
         Optional<Monster> maybeTarget = world.getMonsters().reduce((monster, closest) -> {
+            if (monster.isDead() && !closest.isDead()) {
+                return closest;
+            } else if (closest.isDead()) {
+                return monster;
+            } else if (monster.isDead() && closest.isDead()) {
+                return null;
+            }
+
             if (monster.getPosition().distance(this.position) < closest.getPosition().distance(this.position)) {
                 return monster;
             } else {

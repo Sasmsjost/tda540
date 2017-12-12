@@ -22,6 +22,7 @@ public class Gui extends JPanel {
     private final Map<GameObject, JTile> gameObjectToTile = new HashMap<>();
     private final Map<Tower, JBeam> towerToBeam = new HashMap<>();
     private final List<JTile> allTiles = new LinkedList<>();
+    private final JPanel gameObjectsPanel = new JPanel();
     private final JLayeredPane contentsPanel;
 
     private BufferedImage renderBuffer;
@@ -38,6 +39,11 @@ public class Gui extends JPanel {
         addPanel(createBackgroundPanel(world));
         addPanel(createGameObjectsPanel(world));
         addPanel(createFxPanel(world));
+
+        world.addGameObjectAddedListener(go -> {
+            addGameObject(go, world);
+            return null;
+        });
 
         enableAutoResize();
     }
@@ -117,23 +123,24 @@ public class Gui extends JPanel {
         }
     }
 
+    private void addGameObject(GameObject go, World world) {
+        JTile tile = createGameObjectTile(go, world);
+
+        WorldPosition position = go.getPosition();
+        tile.setTilePosition(position);
+
+        gameObjectsPanel.add(tile);
+        allTiles.add(tile);
+        gameObjectToTile.put(go, tile);
+    }
 
     private JPanel createGameObjectsPanel(World world) {
-        JPanel tiles = new JPanel();
+        JPanel tiles = gameObjectsPanel;
         tiles.setBackground(null);
         tiles.setOpaque(false);
         tiles.setLayout(null);
 
-        world.getGameObjects().forEach(go -> {
-            JTile tile = createGameObjectTile(go, world);
-
-            WorldPosition position = go.getPosition();
-            tile.setTilePosition(position);
-
-            tiles.add(tile);
-            allTiles.add(tile);
-            gameObjectToTile.put(go, tile);
-        });
+        world.getGameObjects().forEach(go -> addGameObject(go, world));
 
         return tiles;
     }

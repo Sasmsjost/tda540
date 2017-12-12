@@ -57,7 +57,7 @@ public class RikardsMonster extends RikardsGameObject implements Monster {
 
     @Override
     public void act(World world) {
-        if (isAtEnd()) {
+        if (isAtEnd() || isDead()) {
             return;
         }
         float movement = 0.001f * speed * world.delta();
