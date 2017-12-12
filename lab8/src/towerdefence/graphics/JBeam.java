@@ -67,9 +67,10 @@ final class JBeam extends JComponent {
                 float dx = to.getX() - x;
                 float dy = to.getY() - y;
 
+                // Ensure we never divide by 0
+                double quote = Math.abs(y) / (Math.abs(x) + 1);
                 // Change the distance based on where on the map we are to make the effect less "stiff"
-                // Could be pre calculated to improve performance, i think...
-                double offset = Math.atan(Math.abs(y / x)) * 500f;
+                double offset = Math.atan(quote) * 500f;
                 double dist = dx * dx + dy * dy + offset;
 
                 // Only distort things within a certain distance
