@@ -54,27 +54,23 @@ public class RikardsTower extends RikardsGameObject implements Tower {
 
     @Override
     public void act(World world) {
-        Monster monster = getClosestMonster(world);
-        if (monster == null) {
-            lastTarget = null;
-            return;
+        long now = world.now();
+        if (now - lastShot > shotDelay) {
+            Monster monster = getClosestMonster(world);
+            shoot(monster, now);
         }
-
-        shoot(monster, world.now());
     }
 
     private void shoot(Monster target, long now) {
-        if (now - lastShot > shotDelay) {
-            lastShot = now;
-            lastTarget = target;
-            if (Math.random() < hitChance) {
-                lastShotHit = false;
-            } else {
-                lastShotHit = true;
-                target.damage(damage);
-            }
+        lastShot = now;
+        lastTarget = target;
+        double shotValue = Math.random();
+        if (target == null || shotValue < hitChance) {
+            lastShotHit = false;
+        } else {
+            lastShotHit = true;
+            target.damage(damage);
         }
-
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * Stateless effect for tower shots since they are only simulated using a random value,
- * not using ray tracing or physics. The effect fails if a shot is active whilst
+ * not using ray tracing or physics.
  */
 final class JBeam extends JComponent {
     private static final int SHADER_ACCURACY = 2;
@@ -21,7 +21,7 @@ final class JBeam extends JComponent {
     private World world;
     private BufferedImage sampleImage;
     private Color[] colors;
-    private BufferedImage blurredBackground = new BufferedImage(getShaderSize(), getShaderSize(), BufferedImage.TYPE_INT_ARGB);
+    private BufferedImage lensDistiontionImage = new BufferedImage(getShaderSize(), getShaderSize(), BufferedImage.TYPE_INT_ARGB);
 
     JBeam(Tower tower, World world, BufferedImage sampleImage) {
         this.sampleImage = sampleImage;
@@ -45,16 +45,18 @@ final class JBeam extends JComponent {
 
         // Convert 0-1 > 0-1-0
         double ampCurve = (1 - Math.pow(delta * 2 - 1, 2));
-        int maxDist = (int) (SHADER_SIZE * SHADER_SIZE * ampCurve);
+        int maxDist = (int) (SHADER_SIZE * SHADER_SIZE * ampCurve * 1.5);
 
-        int size = (int) Math.min(maxDist * 0.05, SHADER_SIZE);
+        // Make the color red around the time we hit the monster
+        // And draw an oval with that color
+        int size = (int) Math.min(maxDist * 0.15, SHADER_SIZE);
         if (passed > 0.5) {
             g2d.setColor(new Color(255, 255, 255, (int) (255 * ampCurve)));
         } else {
             int gb = (int) (passed * 255);
             g2d.setColor(new Color(255, gb, gb, (int) (255 * ampCurve)));
         }
-        g2d.setStroke(new BasicStroke(8));
+        g2d.setStroke(new BasicStroke(5));
         g2d.drawOval((int) (to.getX() - size / 2), (int) (to.getY() - size / 2), size, size);
 
         for (int i = 0; i < getShaderSize(); i++) {
@@ -64,15 +66,16 @@ final class JBeam extends JComponent {
 
                 float dx = to.getX() - x;
                 float dy = to.getY() - y;
+
                 // Change the distance based on where on the map we are to make the effect less "stiff"
                 // Could be pre calculated to improve performance, i think...
-                double offset = Math.sin(x / 3f * delta) * Math.cos(y / 10f * delta) * 100;
+                double offset = Math.atan(Math.abs(y / x)) * 500f;
                 double dist = dx * dx + dy * dy + offset;
 
                 // Only distort things within a certain distance
                 if (dist > maxDist) {
                     // Make everything else transparent
-                    blurredBackground.setRGB(i, j, 0x00000000);
+                    lensDistiontionImage.setRGB(i, j, 0x00000000);
                     continue;
                 }
 
@@ -100,14 +103,16 @@ final class JBeam extends JComponent {
                     wy = 0;
                 }
 
+                // Sample colors and update the effect image
                 int sampledColor = sampleImage.getRGB(wx, wy);
-                blurredBackground.setRGB(i, j, sampledColor);
+                lensDistiontionImage.setRGB(i, j, sampledColor);
             }
         }
 
+        // Move the position so that the image is centered on the shader
         int x = (int) ((to.getX() - SHADER_SIZE));
         int y = (int) ((to.getY()) - SHADER_SIZE);
-        g2d.drawImage(blurredBackground, x, y, SHADER_SIZE * 2, SHADER_SIZE * 2, null);
+        g2d.drawImage(lensDistiontionImage, x, y, SHADER_SIZE * 2, SHADER_SIZE * 2, null);
     }
 
     @Override
