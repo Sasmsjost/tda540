@@ -6,10 +6,13 @@ import towerdefence.util.TilePosition;
 import towerdefence.util.Waypoint;
 import towerdefence.util.WorldPosition;
 
+/**
+ * A moving monster which can be targeted by towers
+ */
 public class RikardsMonster extends RikardsGameObject implements Monster {
     private int maxHealth;
     private int health;
-    private float speed = 0.001f;
+    private float speed = 1f;
     private Waypoint path;
 
     public RikardsMonster(WorldPosition position, int health) {
@@ -57,7 +60,7 @@ public class RikardsMonster extends RikardsGameObject implements Monster {
         if (isAtEnd()) {
             return;
         }
-        float movement = speed * world.delta();
+        float movement = 0.001f * speed * world.delta();
         this.position.setX(this.position.getX() + path.getDirection().getX() * movement);
         this.position.setY(this.position.getY() + path.getDirection().getY() * movement);
 
