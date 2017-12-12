@@ -15,11 +15,11 @@ public class GUITowerDefence extends JFrame {
     // The rate which the game is redrawn
     private static final int FRAME_RATE = 16;
     // The step size on a simulation, lower values means more CPU usage
-    private static final int SIMULATION_STEP_SIZE = 2;
+    private static final int SIMULATION_STEP_SIZE = 1;
     // How many simulations we run per frame
-    private static final int SIMULATION_RATE = 4;
+    private static final int SIMULATION_RATE = 8;
     // The maximum heath of a monster
-    private static final int MONSTER_HEALTH = 60;
+    private static final int MONSTER_HEALTH = 100;
     // The path to take
     private static final int PATH = 1;
     private static final Random random = new Random();

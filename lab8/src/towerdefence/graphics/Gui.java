@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class Gui extends JLayeredPane {
+public class Gui extends JPanel {
     private final Map<GameObject, JTile> gameObjectToTile = new HashMap<>();
     private final Map<Tower, JBeam> towerToBeam = new HashMap<>();
     private final List<JTile> allTiles = new LinkedList<>();
