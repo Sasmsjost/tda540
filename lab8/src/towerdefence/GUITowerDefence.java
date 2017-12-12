@@ -20,8 +20,8 @@ public class GUITowerDefence extends JFrame {
     private static final int SIMULATION_RATE = 8;
     // The maximum heath of a monster
     private static final int MONSTER_HEALTH = 100;
-    // The path to take
-    private static final int PATH = 1;
+    // The path to take, 0 or 1. Other values are interpreted as 0
+    private static final int PATH = 0;
     private static final Random random = new Random();
 
     private Gui gui;
