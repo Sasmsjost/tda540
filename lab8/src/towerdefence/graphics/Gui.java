@@ -4,6 +4,7 @@ import towerdefence.World;
 import towerdefence.WorldMap;
 import towerdefence.go.GameObject;
 import towerdefence.go.Monster;
+import towerdefence.go.MonsterSpawner;
 import towerdefence.go.Tower;
 import towerdefence.util.TilePosition;
 import towerdefence.util.WorldPosition;
@@ -96,7 +97,10 @@ public class Gui extends JPanel {
 
 
     private JTile createGameObjectTile(GameObject go, World world) {
-        if (go instanceof Monster) {
+        if (go instanceof MonsterSpawner) {
+            MonsterSpawner spawner = (MonsterSpawner) go;
+            return new JMonsterSpawner(spawner, world);
+        } else if (go instanceof Monster) {
             Monster monster = (Monster) go;
             return new JMonster(monster, world);
         } else if (go instanceof Tower) {

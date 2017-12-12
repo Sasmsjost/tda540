@@ -7,7 +7,7 @@ import towerdefence.util.WorldPosition;
 /**
  * A moving monster which can be targeted by towers
  */
-public class RikardsMonsterSpawner extends RikardsGameObject implements Monster {
+public class RikardsMonsterSpawner extends RikardsGameObject implements MonsterSpawner {
     private int maxHealth;
     private int health;
 

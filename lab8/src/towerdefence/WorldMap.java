@@ -11,6 +11,7 @@ public interface WorldMap {
     int TOWER = 2;
     int MONSTER = 3;
     int GOAL = 4;
+    int MONSTERSPAWNER = 5;
 
     int getWidth();
 

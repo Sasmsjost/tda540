@@ -22,6 +22,7 @@ public class Texture {
         textures.put(WorldMap.TOWER, Texture.loadTexture("tower"));
         textures.put(WorldMap.MONSTER, Texture.loadTexture("monster"));
         textures.put(WorldMap.GOAL, Texture.loadTexture("goal"));
+        textures.put(WorldMap.MONSTERSPAWNER, Texture.loadTexture("spawner"));
     }
 
     public static Image[] get(int id) {
