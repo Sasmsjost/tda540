@@ -1,7 +1,13 @@
 package towerdefence;
 
+import towerdefence.go.RikardsMonster;
+import towerdefence.util.TilePosition;
+import towerdefence.util.Waypoint;
+import towerdefence.util.WorldPosition;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 
 /**
  * This is a program (file) for *all* tests (testing the model)
@@ -65,4 +71,56 @@ public class Test {
         }
     }
 
+    //====Test of utils====
+
+    public void test_TilePosition(){
+        TilePosition tp1 = new TilePosition(1, 3);
+        TilePosition tp2 = new TilePosition(1, 3);
+        assert tp1.equals(tp2);
+    }
+
+    public void test_WorldPosition(){
+        TilePosition tp1 = new TilePosition(new WorldPosition(1, 3));
+        TilePosition tp2 = new TilePosition(new WorldPosition(1, 3));
+        assert tp1.equals(tp2);
+    }
+
+    public void test_Waypoint_getDirection(){
+        Waypoint currentWaypoint = new Waypoint(new TilePosition(2,1));
+        Waypoint prevWaypoint = new Waypoint(new TilePosition(4,2));
+
+        currentWaypoint.setPrevious(prevWaypoint);
+        TilePosition direction = currentWaypoint.getDirection();
+        assert direction.getX() == -2
+                && direction.getY() == -1;
+    }
+
+    public void test_hasPassedPosition_True(){
+        Waypoint waypoint = new Waypoint(new TilePosition(5,4));
+        Waypoint prevWaypoint = new Waypoint(new TilePosition(1,2));
+        waypoint.setPrevious(prevWaypoint);
+
+        WorldPosition passedPosition = new WorldPosition(2, 3);
+        assert waypoint.hasPassedPosition(passedPosition);
+    }
+
+    //should not pass, but does
+    public void test_hasPassedPosition_False() {
+        Waypoint waypoint = new Waypoint(new TilePosition(5,4));
+        Waypoint prevWaypoint = new Waypoint(new TilePosition(1,2));
+        waypoint.setPrevious(prevWaypoint);
+
+        WorldPosition notPassedPosition = new WorldPosition(8, 9);
+        assert waypoint.hasPassedPosition(notPassedPosition);
+    }
+
+    //====Test of Monster====
+    public void test_damage(){
+        RikardsMonster monster = new RikardsMonster(
+                new WorldPosition(1,2),
+                100
+        );
+        monster.damage(120);
+        assert monster.getHealth() == 0;
+    }
 }

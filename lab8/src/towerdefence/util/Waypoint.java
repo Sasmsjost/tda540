@@ -13,6 +13,7 @@ public class Waypoint {
         return new TilePosition(position.x - previous.position.x, position.y - previous.position.y);
     }
 
+    //doesn't seam to be used
     public int getLength() {
         int count = 0;
         Waypoint child = next;
@@ -25,11 +26,11 @@ public class Waypoint {
 
     // Since we only need to move in a single direction at a time,
     // we only have to ensure that a single dimensional check
-    // is true to return tha the position has passed
+    // is true to return that the position has passed
     public boolean hasPassedPosition(WorldPosition position) {
         TilePosition direction = getDirection();
-        int dx = this.position.x - (int) (float) position.x;
-        int dy = this.position.y - (int) (float) position.y;
+        int dx = this.position.x - position.x.intValue();
+        int dy = this.position.y - position.y.intValue();
 
         if (direction.x > 0 && dx > 0) {
             return false;
