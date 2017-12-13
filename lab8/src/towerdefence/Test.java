@@ -1,6 +1,11 @@
 package towerdefence;
 
+import towerdefence.go.Goal;
+import towerdefence.go.Monster;
+import towerdefence.go.RikardsGoal;
 import towerdefence.go.RikardsMonster;
+import towerdefence.levels.Level;
+import towerdefence.levels.Level1;
 import towerdefence.util.TilePosition;
 import towerdefence.util.Waypoint;
 import towerdefence.util.WorldPosition;
@@ -28,8 +33,11 @@ public class Test {
                 try {
                     method.invoke(test);
                     System.out.printf("Ok\t\t%s\n", method.getName());
+                    System.out.flush();
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     System.err.printf("Failed\t\t%s - %s\n", method.getName(), e.getCause());
+                    e.printStackTrace();
+                    System.err.flush();
                 }
             }
         }
@@ -71,47 +79,91 @@ public class Test {
         }
     }
 
+    private static void assertException(Runnable fn) {
+        try {
+            fn.run();
+            throw new IllegalStateException("Exception was not thrown");
+        } catch (Exception e) {
+        }
+    }
+
     //====Test of utils====
 
-    public void test_TilePosition(){
+    public void testTilePosition() {
         TilePosition tp1 = new TilePosition(1, 3);
         TilePosition tp2 = new TilePosition(1, 3);
-        assert tp1.equals(tp2);
+
+        assertEquals(tp1, tp2);
     }
 
-    public void test_WorldPosition(){
+    public void testWorldPosition() {
         TilePosition tp1 = new TilePosition(new WorldPosition(1, 3));
         TilePosition tp2 = new TilePosition(new WorldPosition(1, 3));
-        assert tp1.equals(tp2);
+
+        assertEquals(tp1, tp2);
     }
 
-    public void test_Waypoint_getDirection(){
+    public void testWaypointGetDirection() {
         Waypoint currentWaypoint = new Waypoint(new TilePosition(2,1));
         Waypoint prevWaypoint = new Waypoint(new TilePosition(4,2));
 
         currentWaypoint.setPrevious(prevWaypoint);
         TilePosition direction = currentWaypoint.getDirection();
-        assert direction.getX() == -2
-                && direction.getY() == -1;
+        assertEquals(direction.getX(), -2);
+        assertEquals(direction.getY(), -1);
     }
 
-    public void test_hasPassedPosition_True(){
-        Waypoint waypoint = new Waypoint(new TilePosition(5,4));
-        Waypoint prevWaypoint = new Waypoint(new TilePosition(1,2));
+    public void testPassedPosition() {
+        Waypoint prevWaypoint = new Waypoint(new TilePosition(0, 0));
+        Waypoint waypoint = new Waypoint(new TilePosition(1, 1));
         waypoint.setPrevious(prevWaypoint);
 
-        WorldPosition passedPosition = new WorldPosition(2, 3);
-        assert waypoint.hasPassedPosition(passedPosition);
+        assertEquals(false, waypoint.hasPassedPosition(new WorldPosition(-1, -1)));
+        assertEquals(false, waypoint.hasPassedPosition(new WorldPosition(0, 0)));
+        assertEquals(false, waypoint.hasPassedPosition(new WorldPosition(0, 1)));
+        assertEquals(false, waypoint.hasPassedPosition(new WorldPosition(1, 0)));
+        assertEquals(true, waypoint.hasPassedPosition(new WorldPosition(1, 1)));
+        assertEquals(true, waypoint.hasPassedPosition(new WorldPosition(2, 2)));
     }
 
-    //should not pass, but does
-    public void test_hasPassedPosition_False() {
-        Waypoint waypoint = new Waypoint(new TilePosition(5,4));
-        Waypoint prevWaypoint = new Waypoint(new TilePosition(1,2));
-        waypoint.setPrevious(prevWaypoint);
+    public void testPathGenerationOk() {
+        WorldMap map = new RikardsWorldMap(new int[][]{
+                {1, 1, 1}
+        }, 0);
 
-        WorldPosition notPassedPosition = new WorldPosition(8, 9);
-        assert waypoint.hasPassedPosition(notPassedPosition);
+        Waypoint waypoint = map.generatePathTo(new TilePosition(0, 0), new TilePosition[]{new TilePosition(2, 0)}, 1);
+        assertEquals(waypoint.getLength(), 2);
+    }
+
+    public void testPathGenerationFail() {
+        WorldMap map = new RikardsWorldMap(new int[][]{
+                {1, 0, 1}
+        }, 0);
+
+        TilePosition start = new TilePosition(0, 0);
+        TilePosition[] goal = new TilePosition[]{new TilePosition(0, 0)};
+        assertException(() -> map.generatePathTo(start, goal, 1));
+    }
+
+    public void testGameWillEnd() {
+        Level level = Level1.get();
+        WorldMap map = new RikardsWorldMap(Level1.get().getMap(), 1);
+        World world = new RikardsWorld(map);
+        Monster monster = new RikardsMonster(level.getMonsters()[0], 100);
+        Goal goal = new RikardsGoal(level.getGoals()[0]);
+
+        world.add(goal);
+        world.add(monster);
+
+        int maxTime = 100000;
+        for (int i = 0; i < maxTime; i++) {
+            world.step(1);
+            if (world.isGameWon() || world.isGameLost()) {
+                return;
+            }
+        }
+
+        throw new IllegalStateException("Game did not end in time");
     }
 
     //====Test of Monster====
