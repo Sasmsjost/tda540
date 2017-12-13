@@ -3,13 +3,22 @@ package towerdefence.util;
 /**
  * A doubly linked list node describing a waypoint.
  * The succeeding node can be gotten using Waypoint#getNext()
+ *
+ * Because doubly linked lists are needed.
  */
 public class Waypoint {
     private Waypoint previous;
     private Waypoint next;
     private TilePosition position;
 
+    /**
+     * @param position The position of a certain waypoint
+     * @throws IllegalArgumentException Will be thrown if position is null
+     */
     public Waypoint(TilePosition position) {
+        if (position == null) {
+            throw new IllegalArgumentException("A valid position must be provided when constructing a Waypoint");
+        }
         this.position = position;
     }
 

@@ -27,8 +27,16 @@ public class Gui extends JPanel {
     private BufferedImage renderBuffer;
     private boolean disableShader = false;
 
+    /**
+     * @param world         The world to base the drawing on
+     * @param disableShader If the shader effect should be disabled
+     * @throws IllegalArgumentException If world is null
+     */
     public Gui(World world, boolean disableShader) {
         super();
+        if (world == null) {
+            throw new IllegalArgumentException("A valid world must be provided when creating a Gui");
+        }
         this.disableShader = disableShader;
 
         contentsPanel = new JLayeredPane();

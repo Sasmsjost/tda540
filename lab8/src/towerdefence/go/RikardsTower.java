@@ -22,8 +22,18 @@ public class RikardsTower extends RikardsGameObject implements Tower {
     // Start shooting immediately
     private long lastShot = Integer.MIN_VALUE;
 
+    /**
+     * @param position  The position of the tower
+     * @param range     The range of the tower
+     * @param hitChance The chance of a tower hitting the target when firing. 1 is always, 0 is never
+     * @param damage    The amount the tower should damage the Monster it's firing on
+     * @param shotDelay How long time there is between the tower tries to shoot the monster
+     */
     public RikardsTower(WorldPosition position, float range, float hitChance, int damage, int shotDelay) {
         super();
+        if (position == null) {
+            throw new IllegalArgumentException("A valid position must be provided when constructing a tower");
+        }
         this.position = position;
         this.range = range;
         this.hitChance = hitChance;

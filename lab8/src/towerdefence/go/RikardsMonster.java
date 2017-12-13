@@ -15,8 +15,16 @@ public class RikardsMonster extends RikardsGameObject implements Monster {
     private float speed = 1f;
     private Waypoint path;
 
+    /**
+     * @param position The position of the monster
+     * @param health   The initial and maximum amount of health a monster can have
+     * @throws IllegalArgumentException If position is null
+     */
     public RikardsMonster(WorldPosition position, int health) {
         super();
+        if (position == null) {
+            throw new IllegalArgumentException("A valid position must be provided when constructing a monster");
+        }
         this.maxHealth = health;
         this.health = health;
         this.position = position;

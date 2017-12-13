@@ -10,8 +10,15 @@ import towerdefence.util.WorldPosition;
  */
 public class RikardsGoal extends RikardsGameObject implements Goal {
 
+    /**
+     * @param position The position of the goal
+     * @throws IllegalArgumentException If position is null
+     */
     public RikardsGoal(WorldPosition position) {
         super();
+        if (position == null) {
+            throw new IllegalArgumentException("A valid position must be provided when constructing a goal");
+        }
         this.position = position;
     }
 
