@@ -2,8 +2,8 @@ package towerdefence;
 
 import towerdefence.go.Goal;
 import towerdefence.go.Monster;
-import towerdefence.go.RikardsGoal;
-import towerdefence.go.RikardsMonster;
+import towerdefence.go.OurGoal;
+import towerdefence.go.OurMonster;
 import towerdefence.levels.Level;
 import towerdefence.levels.Level1;
 import towerdefence.util.TilePosition;
@@ -127,7 +127,7 @@ public class Test {
     }
 
     public void testPathGenerationOk() {
-        WorldMap map = new RikardsWorldMap(new int[][]{
+        WorldMap map = new OurWorldMap(new int[][]{
                 {1, 1, 1}
         }, 0);
 
@@ -136,7 +136,7 @@ public class Test {
     }
 
     public void testPathGenerationFail() {
-        WorldMap map = new RikardsWorldMap(new int[][]{
+        WorldMap map = new OurWorldMap(new int[][]{
                 {1, 0, 1}
         }, 0);
 
@@ -147,10 +147,10 @@ public class Test {
 
     public void testGameWillEnd() {
         Level level = Level1.get();
-        WorldMap map = new RikardsWorldMap(Level1.get().getMap(), 1);
-        World world = new RikardsWorld(map);
-        Monster monster = new RikardsMonster(level.getMonsters()[0], 100);
-        Goal goal = new RikardsGoal(level.getGoals()[0]);
+        WorldMap map = new OurWorldMap(Level1.get().getMap(), 1);
+        World world = new OurWorld(map);
+        Monster monster = new OurMonster(level.getMonsters()[0], 100);
+        Goal goal = new OurGoal(level.getGoals()[0]);
 
         world.add(goal);
         world.add(monster);
@@ -168,7 +168,7 @@ public class Test {
 
     //====Test of Monster====
     public void test_damage(){
-        RikardsMonster monster = new RikardsMonster(
+        OurMonster monster = new OurMonster(
                 new WorldPosition(1,2),
                 100
         );

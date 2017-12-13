@@ -9,7 +9,7 @@ import towerdefence.util.WorldPosition;
 /**
  * A moving monster which can be targeted by towers
  */
-public class RikardsMonster extends RikardsGameObject implements Monster {
+public class OurMonster extends OurGameObject implements Monster {
     private int maxHealth;
     private int health;
     private float speed = 1f;
@@ -20,7 +20,7 @@ public class RikardsMonster extends RikardsGameObject implements Monster {
      * @param health   The initial and maximum amount of health a monster can have
      * @throws IllegalArgumentException If position is null
      */
-    public RikardsMonster(WorldPosition position, int health) {
+    public OurMonster(WorldPosition position, int health) {
         super();
         if (position == null) {
             throw new IllegalArgumentException("A valid position must be provided when constructing a monster");

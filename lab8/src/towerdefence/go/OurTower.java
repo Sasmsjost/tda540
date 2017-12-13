@@ -10,7 +10,7 @@ import java.util.Optional;
  * The tower in tower defence.
  * Shoots monsters within range
  */
-public class RikardsTower extends RikardsGameObject implements Tower {
+public class OurTower extends OurGameObject implements Tower {
 
     private GameObject lastTarget;
     private int shotDelay;
@@ -29,7 +29,7 @@ public class RikardsTower extends RikardsGameObject implements Tower {
      * @param damage    The amount the tower should damage the Monster it's firing on
      * @param shotDelay How long time there is between the tower tries to shoot the monster
      */
-    public RikardsTower(WorldPosition position, float range, float hitChance, int damage, int shotDelay) {
+    public OurTower(WorldPosition position, float range, float hitChance, int damage, int shotDelay) {
         super();
         if (position == null) {
             throw new IllegalArgumentException("A valid position must be provided when constructing a tower");

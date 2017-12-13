@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  * An abstraction over the world map used by the World
  * Also provides useful helper methods to minimize boilerplate code
  */
-public class RikardsWorldMap implements WorldMap {
+public class OurWorldMap implements WorldMap {
     private int[][] map;
     private int prioritizedPath;
 
@@ -23,7 +23,7 @@ public class RikardsWorldMap implements WorldMap {
      *                        the path with index 0 will be used
      * @throws IllegalArgumentException if the map is smaller than 1x1 or the prioritized path is < 0
      */
-    public RikardsWorldMap(int[][] map, int prioritizedPath) {
+    public OurWorldMap(int[][] map, int prioritizedPath) {
         if (map == null || map.length == 0 || map[0] == null || map[0].length == 0) {
             throw new IllegalArgumentException("The provided map must be at least a 1x1");
         }

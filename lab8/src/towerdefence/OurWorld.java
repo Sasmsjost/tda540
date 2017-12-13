@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 /**
  * A simulatable world describing the current state of the game
  */
-public class RikardsWorld implements World {
+public class OurWorld implements World {
     private WorldMap worldMap;
     private ArrayList<GameObject> gameObjects;
     private long time = 0;
     private long delta = 0;
 
-    public RikardsWorld(WorldMap worldMap) {
+    public OurWorld(WorldMap worldMap) {
         if (worldMap == null) {
             throw new IllegalArgumentException("A valid map must be provided to the world, null found");
         }

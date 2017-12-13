@@ -65,10 +65,10 @@ public class GUITowerDefence extends JFrame {
     }
 
     private World buildWorld(Level level) {
-        World world = new RikardsWorld(new RikardsWorldMap(level.getMap(), PATH));
+        World world = new OurWorld(new OurWorldMap(level.getMap(), PATH));
 
         for (WorldPosition position : level.getGoals()) {
-            Goal goal = new RikardsGoal(position);
+            Goal goal = new OurGoal(position);
             world.add(goal);
         }
 
@@ -78,12 +78,12 @@ public class GUITowerDefence extends JFrame {
             float hitChance = 0.5f;
             int shotDelay = random.nextInt(600) + 400;
 
-            Tower tower = new RikardsTower(position, range, hitChance, damage, shotDelay);
+            Tower tower = new OurTower(position, range, hitChance, damage, shotDelay);
             world.add(tower);
         }
 
         for (WorldPosition position : level.getMonsters()) {
-            Monster monster = new RikardsMonster(position, MONSTER_HEALTH);
+            Monster monster = new OurMonster(position, MONSTER_HEALTH);
             world.add(monster);
         }
 

@@ -8,13 +8,13 @@ import towerdefence.util.WorldPosition;
  * The goal is static and doesn't do anything, it's more intended
  * as a marker for other game logic
  */
-public class RikardsGoal extends RikardsGameObject implements Goal {
+public class OurGoal extends OurGameObject implements Goal {
 
     /**
      * @param position The position of the goal
      * @throws IllegalArgumentException If position is null
      */
-    public RikardsGoal(WorldPosition position) {
+    public OurGoal(WorldPosition position) {
         super();
         if (position == null) {
             throw new IllegalArgumentException("A valid position must be provided when constructing a goal");
