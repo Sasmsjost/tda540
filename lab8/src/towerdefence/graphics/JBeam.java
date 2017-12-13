@@ -41,7 +41,7 @@ final class JBeam extends JComponent {
     /**
      * Software shader, not too optimized but runnable on reasonable hardware
      */
-    private void paintLenseDistortion(Graphics2D g2d, WorldPosition to, double delta, double passed) {
+    private void paintLenseDistortion(Graphics2D g2d, ScreenPosition to, double delta, double passed) {
 
         // Convert 0-1 > 0-1-0
         double ampCurve = (1 - Math.pow(delta * 2 - 1, 2));
@@ -155,39 +155,48 @@ final class JBeam extends JComponent {
         int opacity = (int) (Math.sqrt(nDelta) * 255);
 
         boolean isHit = tower.isLastShotHit();
+        ScreenPosition sFrom = new ScreenPosition(fx, fy);
+        ScreenPosition sTo = new ScreenPosition(tx, ty);
         if (isHit) {
             if (sampleImage != null) {
-                paintLenseDistortion(g2d, new WorldPosition(tx, ty), nDelta, delta);
+                paintLenseDistortion(g2d, new ScreenPosition(tx, ty), nDelta, delta);
             }
 
             for (Color c : colors) {
                 opacity -= 50;
                 opacity = Math.max(opacity, 0);
-                drawLine(g2d, fx, fy, tx, ty, nDelta, new Color(c.getRed(), c.getGreen(), c.getBlue(), opacity));
+                drawLine(g2d, sFrom, sTo, nDelta, new Color(c.getRed(), c.getGreen(), c.getBlue(), opacity));
             }
             if (sampleImage == null) {
-                drawProjectile(g2d, tx, ty, delta, new Color(255, 255, 255, opacity));
+                drawProjectile(g2d, sTo, new Color(255, 255, 255, opacity));
             }
         } else {
             nDelta *= 0.1;
-            drawLine(g2d, fx, fy, fx, fy, nDelta, new Color(0, 50, 60, opacity));
-            drawLine(g2d, fx, fy, fx, fy, nDelta, new Color(50, 0, 60, opacity));
-            drawLine(g2d, fx, fy, fx, fy, nDelta, new Color(30, 40, 0, opacity));
+            drawLine(g2d, sFrom, sFrom, nDelta, new Color(0, 50, 60, opacity));
+            drawLine(g2d, sFrom, sFrom, nDelta, new Color(50, 0, 60, opacity));
+            drawLine(g2d, sFrom, sFrom, nDelta, new Color(30, 40, 0, opacity));
         }
     }
 
-    private void drawProjectile(Graphics2D g2d, float x, float y, double delta, Color color) {
+    private void drawProjectile(Graphics2D g2d, ScreenPosition from, Color color) {
+        float x = from.getX();
+        float y = from.getY();
         int size = 20;
+
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke(5));
         g2d.fillOval((int) x - size / 2, (int) y - size / 2, size, size);
     }
 
-    private void drawLine(Graphics2D g2d, float x, float y, float x2, float y2, double delta, Color color) {
-        g2d.setColor(color);
-
+    private void drawLine(Graphics2D g2d, ScreenPosition from, ScreenPosition to, double delta, Color color) {
+        float x = from.getX();
+        float y = from.getY();
+        float x2 = to.getX();
+        float y2 = to.getY();
         float cx = (float) ((Math.random() - 0.5) * delta) * getWidth();
         float cy = (float) ((Math.random() - 0.5) * delta) * getHeight();
+
+        g2d.setColor(color);
 
         Path2D.Float path = new Path2D.Float();
         path.moveTo(x, y);
