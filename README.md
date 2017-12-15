@@ -15,5 +15,5 @@ was hard coded. It required two paths which where toggleable in code. The
 graphics where optional but it was fun seeing what could be done using
 Java Swing.
 
-![screenshot of the game](https://raw.githubusercontent.com/rikardlegge/tda540/master/lab8/screenshot_actual.png)
+![screenshot of the game](https://raw.githubusercontent.com/RikardLegge/tda540/master/lab8/screenshot_actual.png)
 
